@@ -1,849 +1,204 @@
-<!DOCTYPE html><html lang="en" style=""><svg class="inline-defs-container" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"></svg><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Brightloop - Subscriptions, Simplified</title>
-<!-- Tailwind CSS CDN with forms and container queries -->
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Brightloop - Login</title>
+<!-- Tailwind CSS CDN with plugins -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Google Fonts: Plus Jakarta Sans -->
-<link href="https://fonts.googleapis.com" rel="preconnect">
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              forest: '#1d3c34',
-              forestDark: '#142c26',
-              mint: '#e6f3ee',
-              mintLight: '#f0f7f4',
-              sage: '#2f695a',
-            },
-            surface: '#f9faf9',
-            borderLight: '#eef2f0',
-          }
-        }
-      }
-    }
-  </script>
-<style data-purpose="custom-utilities">
-    /* Subtle custom styles for charts, badges, and layout perfection */
+<!-- Google Fonts: Plus Jakarta Sans & Fredoka -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700;1,800&amp;family=Fredoka:wght@700&amp;display=swap" rel="stylesheet"/>
+<!-- Custom Styles for Brand Visuals -->
+<style data-purpose="brand-typography">
     body {
-      background-color: #f7f9f8;
-      color: #1f2937;
-      font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
-    .chart-grid-line {
-      stroke: #edf1f0;
-      stroke-dasharray: 4 4;
+    .font-brand-logo {
+      font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: -0.02em;
     }
 
-    /* Custom subtle scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    /* Arched text SVG container */
+    .curved-text-path {
+      fill: none;
     }
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    
+    .curved-text-content {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      fill: #ffffff;
+      font-size: 26px;
+      letter-spacing: 0.04em;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #d1d5db;
-      border-radius: 9999px;
+  </style>
+<style data-purpose="custom-colors">
+    .bg-pickle-dark {
+      background-color: #0A291E;
+    }
+    .bg-pickle-card {
+      background-color: #0e3b2b;
+    }
+    .text-pickle-lime {
+      color: #c6ff00;
+    }
+    .border-pickle-card {
+      border-color: rgba(255, 255, 255, 0.08);
     }
   </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-[#f8faf9] flex min-h-screen">
-<!-- BEGIN: LeftSidebar -->
-<aside class="w-64 flex-shrink-0 bg-white border-r border-[#eaefec] flex flex-col justify-between relative overflow-hidden select-none min-h-screen" data-purpose="sidebar-navigation">
-<!-- Background subtle organic curve flourish -->
-<div class="absolute -bottom-16 -left-16 w-80 h-80 bg-gradient-to-tr from-[#dbeee5]/40 via-[#eef6f2]/30 to-transparent rounded-full pointer-events-none blur-2xl"></div>
-<div class="absolute bottom-28 -right-16 w-48 h-48 bg-[#edf7f2]/50 rounded-full pointer-events-none blur-xl"></div>
-<div class="p-6 relative z-10">
-<!-- Logo Branding -->
-<div class="flex items-center space-x-3 mb-8" data-purpose="brand-logo">
-<div class="w-9 h-9 rounded-full bg-gradient-to-tr from-brand-forest to-[#28584c] flex items-center justify-center p-[2px] shadow-sm">
-<div class="w-full h-full rounded-full border-2 border-dashed border-emerald-300 flex items-center justify-center">
-<div class="w-2.5 h-2.5 rounded-full bg-white"></div>
+<body class="h-screen w-full min-h-[900px] bg-white text-gray-900 antialiased selection:bg-lime-300 selection:text-black overflow-hidden flex flex-col justify-center">
+<!-- Wide Landscape Desktop Screen Container (16:9 / 1440px desktop canvas ratio) -->
+<div class="w-full h-full min-h-[900px] grid grid-cols-2">
+<!-- BEGIN: LeftBrandShowcase (50% wide desktop panel) -->
+<aside class="w-full h-full bg-pickle-dark text-white flex flex-col justify-between p-12 lg:p-14 xl:p-16 relative overflow-hidden select-none" data-purpose="brand-sidebar">
+<!-- Top Brand Logo -->
+<div class="relative z-10 flex items-center" data-purpose="brand-header">
+<h1 class="font-brand-logo text-3xl xl:text-4xl font-extrabold uppercase tracking-tight text-pickle-lime">BRIGHTLOOP</h1>
+</div>
+<!-- Center Hero Graphic & Slogan -->
+<div class="my-auto py-4 relative flex flex-col items-start z-10 max-w-xl" data-purpose="hero-composition">
+<!-- Curved Graphic & Slogan Header -->
+<div class="relative w-full max-w-[340px] h-[160px] mb-1">
+<svg class="w-full h-full overflow-visible" viewbox="0 0 340 180">
+<path class="curved-text-path" d="M 38 155 C 50 68, 125 35, 230 68" id="curve"></path>
+<text class="curved-text-content">
+<textpath href="#curve" startoffset="4%">Scale your</textpath>
+</text>
+<!-- Stylized Hand / Launch Icon Illustration -->
+<path d="M 0 115 L 75 160 L 58 190 L 0 148 Z" fill="#ffffff"></path>
+<line stroke="#0A291E" stroke-linecap="round" stroke-width="3" x1="72" x2="57" y1="156" y2="186"></line>
+<path d="M 75 160 C 86 166, 102 160, 115 142 L 142 108 C 145 104, 142 98, 137 98 C 133 98, 130 101, 127 106 L 115 122 L 128 85 C 131 78, 124 74, 118 76 C 114 78, 110 82, 107 90 L 99 110 L 98 86 C 98 80, 91 78, 86 82 C 82 85, 82 91, 84 98 L 88 116 L 82 106 C 78 101, 71 102, 69 108 C 67 114, 70 120, 74 126 L 82 142 Z" fill="#ffffff" stroke="#ffffff" stroke-linejoin="round"></path>
+<path d="M 103 118 L 118 97" stroke="#0A291E" stroke-linecap="round" stroke-width="1.8"></path>
+<path d="M 94 122 L 95 102" stroke="#0A291E" stroke-linecap="round" stroke-width="1.8"></path>
+<path d="M 85 130 L 80 118" stroke="#0A291E" stroke-linecap="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<!-- Main Headline Typography -->
+<div class="leading-[0.95] text-left">
+<div class="text-[64px] xl:text-[76px] font-extrabold italic tracking-tight text-pickle-lime inline-block transform -skew-x-3">recurring</div>
+<div class="text-[60px] xl:text-[72px] font-extrabold tracking-tight text-white block mt-1">billing flow</div>
 </div>
 </div>
-<div>
-<h1 class="text-lg font-bold tracking-tight text-gray-900 leading-none">Brightloop</h1>
-<p class="text-[11px] font-medium text-gray-400 mt-1 leading-none">Subscriptions, Simplified</p>
+<!-- Bottom Feature Cards Row (3 cards side-by-side in wide landscape) -->
+<div class="grid grid-cols-3 gap-4 pt-6 z-10 border-t border-white/10" data-purpose="feature-highlights">
+<div class="bg-pickle-card border border-pickle-card rounded-2xl p-4 flex flex-col items-start transition-all hover:bg-opacity-80">
+<span aria-label="receipt icon" class="text-2xl mb-2.5" role="img">⚡</span>
+<h2 class="text-sm font-bold text-white mb-1.5 leading-snug">Automated Invoicing</h2>
+<p class="text-xs text-gray-300 leading-relaxed font-normal">Auto-generate recurring invoices and eliminate manual billing errors.</p>
 </div>
+<div class="bg-pickle-card border border-pickle-card rounded-2xl p-4 flex flex-col items-start transition-all hover:bg-opacity-80">
+<span aria-label="layers icon" class="text-2xl mb-2.5" role="img">🔄</span>
+<h2 class="text-sm font-bold text-white mb-1.5 leading-snug">Multi-Tier Plans</h2>
+<p class="text-xs text-gray-300 leading-relaxed font-normal">Configure flexible billing cycles, paused states, and custom pricing rules.</p>
 </div>
-<!-- Navigation Links -->
-<nav class="space-x-0 space-y-1">
-<!-- Dashboard (Active) -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-[#eaf3ef] text-[#1d3c34] font-semibold text-sm transition-colors group" href="#">
-<svg class="w-4 h-4 text-[#1d3c34]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<rect fill="currentColor" fill-opacity="0.2" height="9" rx="1" width="7" x="3" y="3"></rect>
-<rect height="5" rx="1" width="7" x="14" y="3"></rect>
-<rect height="9" rx="1" width="7" x="14" y="12"></rect>
-<rect height="5" rx="1" width="7" x="3" y="16"></rect>
-</svg>
-<span class="">Dashboard</span>
-</a>
-<!-- Customers -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Customers</span>
-</a>
-<!-- Products -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Products</span>
-</a>
-<!-- Plans -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<rect height="16" rx="2" width="18" x="3" y="4"></rect>
-<line x1="7" x2="17" y1="8" y2="8"></line>
-<line x1="7" x2="13" y1="12" y2="12"></line>
-</svg>
-<span class="">Plans</span>
-</a>
-<!-- Discounts -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Discounts</span>
-</a>
-<!-- Taxes -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-<path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-<path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-</svg>
-<span class="">Taxes</span>
-</a>
-<!-- Subscriptions -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Subscriptions</span>
-</a>
-<!-- Invoices -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Invoices</span>
-</a>
-<!-- Payments -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<rect height="14" rx="2" width="20" x="2" y="5"></rect>
-<line x1="2" x2="22" y1="10" y2="10"></line>
-</svg>
-<span class="">Payments</span>
-</a>
-<!-- Reports -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Reports</span>
-</a>
-<!-- Admin Subheading -->
-<div class="pt-5 pb-1">
-<span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3">Admin</span>
+<div class="bg-pickle-card border border-pickle-card rounded-2xl p-4 flex flex-col items-start transition-all hover:bg-opacity-80">
+<span aria-label="chart icon" class="text-2xl mb-2.5" role="img">📈</span>
+<h2 class="text-sm font-bold text-white mb-1.5 leading-snug">Real-Time MRR</h2>
+<p class="text-xs text-gray-300 leading-relaxed font-normal">Monitor recurring metrics, cash flow, and overdue accounts instantly.</p>
 </div>
-<!-- Staff -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Staff</span>
-</a>
-<!-- Settings -->
-<a class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium transition-colors" href="#">
-<svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="3"></circle>
-<path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Settings</span>
-</a>
-</nav>
-</div>
-<!-- Pro Plan Card Footer -->
-<div class="p-4 mx-4 mb-5 rounded-2xl bg-white border border-[#e4eee8] shadow-sm relative z-10" data-purpose="subscription-tier-widget">
-<div class="flex items-center space-x-2 mb-2">
-<svg class="w-4 h-4 text-emerald-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="text-xs font-bold text-gray-800">Pro Plan</span>
-</div>
-<!-- Progress Bar -->
-<div class="w-full bg-[#e8f1ec] h-1.5 rounded-full overflow-hidden mb-2">
-<div class="bg-[#245849] h-full rounded-full w-[65%]"></div>
-</div>
-<p class="text-[11px] text-gray-500 font-medium mb-3">324 / 500 subscriptions</p>
-<button class="w-full py-2 px-3 bg-[#1d3c34] hover:bg-[#142d26] text-white rounded-xl text-xs font-semibold tracking-wide transition-all shadow-sm">
-        Upgrade Plan
-      </button>
 </div>
 </aside>
-<!-- END: LeftSidebar -->
-<!-- BEGIN: MainContent -->
-<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
-<!-- BEGIN: TopBar -->
-<header class="h-20 bg-white/70 backdrop-blur-md border-b border-[#ebf0ed] px-8 flex items-center justify-between sticky top-0 z-30" data-purpose="top-navigation-header">
-<!-- Search Input -->
-<div class="relative w-96">
-<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-</svg>
-</span>
-<input class="w-full pl-10 pr-4 py-2 bg-white text-xs text-gray-800 placeholder-gray-400 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#1d3c34]/20 focus:border-[#1d3c34] transition-all" placeholder="Search customers, subscriptions, invoices..." type="text">
-</div>
-<!-- Right Actions: Notifications & Profile -->
-<div class="flex items-center space-x-5">
-<!-- Bell Icon -->
-<button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-gray-100">
-<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white"></span>
-</button>
-<!-- User Profile -->
-<div class="flex items-center space-x-3 pl-2 border-l border-gray-100">
-<img alt="Rohan John" class="w-9 h-9 rounded-full object-cover ring-1 ring-gray-200" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7W0mbpUnNMyIHxfjAD2yV2uOEwTcIpcIUJ8MzbZhDnsHzPQ0OpvoSq5hgoUZXqnzDN3C15k233L1TwqAXhzOdNkLjXolVjPsLMfO_iVBb3MX_N4bhl5XxF5v8eWB9z5VZzgJBP0pW5DCOMYyUV8eZtfb5O3b9eWkSIjcl0NqIFJCntb4Z2o5IseVlvjwOElceAQQTjDaz7h2TKd6lPa8ZK8F5-Mq7Ns4lhDMeYA">
-<div class="text-left leading-tight hidden sm:block">
-<h4 class="text-xs font-bold text-gray-900">Rohan John</h4>
-<span class="text-[11px] font-medium text-gray-400">Admin</span>
-</div>
-<svg class="w-3.5 h-3.5 text-gray-400 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-</div>
+<!-- END: LeftBrandShowcase -->
+<!-- BEGIN: RightAuthArea (50% crisp white panel) -->
+<main class="w-full h-full bg-white flex flex-col justify-between p-12 lg:p-14 xl:p-16 relative overflow-hidden" data-purpose="authentication-panel">
+<!-- Top Navigation / Account Switcher -->
+<nav class="flex justify-end items-center text-sm" data-purpose="top-navigation">
+<span class="text-neutral-500">Need access?</span>
+<a class="ml-1.5 font-bold text-black hover:underline focus:outline-none focus:ring-1 focus:ring-black rounded" href="#contact">Contact admin</a>
+</nav>
+<!-- Center Auth Form Container -->
+<div class="w-full max-w-[420px] mx-auto my-auto py-2" data-purpose="login-form-container">
+<!-- Main Title & Description -->
+<header class="text-center mb-8">
+<h2 class="text-3xl font-bold tracking-tight text-gray-950 mb-2.5">Welcome back</h2>
+<p class="text-sm text-gray-500 max-w-sm mx-auto leading-relaxed">Sign in to access your billing engine, invoices, and subscription accounts.</p>
 </header>
-<!-- END: TopBar -->
-<!-- Main Workspace Area -->
-<div class="p-8 space-y-7 max-w-[1400px] w-full mx-auto">
-<!-- BEGIN: DashboardHeader -->
-<section class="flex flex-col md:flex-row md:items-center md:justify-between gap-4" data-purpose="page-title-banner">
+<!-- Credentials Form -->
+<form action="#" class="space-y-5" data-purpose="login-form" method="POST">
+<!-- Email Input Field -->
 <div>
-<h2 class="text-2xl font-bold tracking-tight text-gray-900 flex items-center">
-            Good morning, Rohan <span class="ml-2 inline-block animate-pulse">👋</span>
-</h2>
-<p class="text-xs text-gray-500 mt-1 font-medium">Here's what's happening with your subscriptions today.</p>
+<label class="block text-xs font-semibold text-gray-700 mb-1.5" for="email">
+            Email address
+          </label>
+<input autocomplete="email" class="w-full px-4 py-3 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0A291E] focus:border-transparent transition" id="email" name="email" placeholder="alex@company.com" required="" type="email"/>
 </div>
-<div class="flex items-center space-x-4">
-<!-- Date Display -->
-<div class="flex items-center space-x-3 text-right">
-<div class="p-2 rounded-xl bg-white border border-gray-200/80 shadow-xs text-gray-500">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-<line x1="3" x2="21" y1="10" y2="10"></line>
-</svg>
-</div>
+<!-- Password Input Field -->
 <div>
-<div class="text-xs font-bold text-gray-800 leading-tight">Tuesday, 27 Oct 2026</div>
-<div class="text-[11px] text-gray-400 font-medium">Let's make it a productive day.</div>
+<div class="flex items-center justify-between mb-1.5">
+<label class="block text-xs font-semibold text-gray-700" for="password">
+              Password
+            </label>
+<a class="text-xs font-semibold text-gray-500 hover:text-black hover:underline focus:outline-none" href="#forgot">
+              Forgot password?
+            </a>
 </div>
-</div>
-<!-- Create New CTA -->
-<button class="flex items-center space-x-2 bg-[#1d3c34] hover:bg-[#142d26] text-white px-4 py-2.5 rounded-xl font-medium text-xs shadow-sm transition-all">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="">Create New</span>
-<svg class="w-3.5 h-3.5 ml-0.5 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</button>
-</div>
-</section>
-<!-- END: DashboardHeader -->
-<!-- BEGIN: StatCardsGrid -->
-<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" data-purpose="kpi-metrics-cards">
-<!-- Card 1: Total Customers -->
-<div class="bg-white rounded-2xl p-5 border border-[#ebf0ed] shadow-xs relative overflow-hidden flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<div class="w-10 h-10 rounded-xl bg-[#ecf7f2] flex items-center justify-center text-[#245849]">
-<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<span class="inline-flex items-center text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-<svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 10l7-7m0 0l7 7m-7-7v18" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-              12%
-            </span>
-</div>
-<div class="mt-4">
-<h4 class="text-xs font-semibold text-gray-500">Total Customers</h4>
-<div class="text-2xl font-bold text-gray-900 mt-0.5">1,248</div>
-<p class="text-[11px] text-gray-400 font-medium mt-1">+132 this month</p>
-</div>
-</div>
-<!-- Card 2: Active Subscriptions -->
-<div class="bg-white rounded-2xl p-5 border border-[#ebf0ed] shadow-xs relative overflow-hidden flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<div class="w-10 h-10 rounded-xl bg-[#fdf5e8] flex items-center justify-center text-[#c28422]">
-<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<span class="inline-flex items-center text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-<svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 10l7-7m0 0l7 7m-7-7v18" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-              8%
-            </span>
-</div>
-<div class="mt-4">
-<h4 class="text-xs font-semibold text-gray-500">Active Subscriptions</h4>
-<div class="text-2xl font-bold text-gray-900 mt-0.5">892</div>
-<p class="text-[11px] text-gray-400 font-medium mt-1">+64 this month</p>
-</div>
-</div>
-<!-- Card 3: Monthly Recurring Revenue -->
-<div class="bg-white rounded-2xl p-5 border border-[#ebf0ed] shadow-xs relative overflow-hidden flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<div class="w-10 h-10 rounded-xl bg-[#fcedea] flex items-center justify-center text-[#d94a38]">
-<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<span class="inline-flex items-center text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-<svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 10l7-7m0 0l7 7m-7-7v18" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-              15%
-            </span>
-</div>
-<div class="mt-4">
-<h4 class="text-xs font-semibold text-gray-500">Monthly Recurring Revenue</h4>
-<div class="text-2xl font-bold text-gray-900 mt-0.5 tracking-tight">₹ 12,48,000</div>
-<p class="text-[11px] text-gray-400 font-medium mt-1">+ ₹ 1,62,000</p>
-</div>
-</div>
-<!-- Card 4: Outstanding Amount -->
-<div class="bg-white rounded-2xl p-5 border border-[#ebf0ed] shadow-xs relative overflow-hidden flex flex-col justify-between">
-<div class="flex items-start justify-between">
-<div class="w-10 h-10 rounded-xl bg-[#eaf4f2] flex items-center justify-center text-[#2d7d6f]">
-<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<rect height="14" rx="2" width="20" x="2" y="5"></rect>
-<line x1="2" x2="22" y1="10" y2="10"></line>
-</svg>
-</div>
-<span class="inline-flex items-center text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">
-<svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-              6%
-            </span>
-</div>
-<div class="mt-4">
-<h4 class="text-xs font-semibold text-gray-500">Outstanding Amount</h4>
-<div class="text-2xl font-bold text-gray-900 mt-0.5 tracking-tight">₹ 3,24,500</div>
-<p class="text-[11px] text-gray-400 font-medium mt-1">Across 48 invoices</p>
-</div>
-</div>
-</section>
-<!-- END: StatCardsGrid -->
-<!-- BEGIN: MidChartsSection -->
-<section class="grid grid-cols-1 lg:grid-cols-3 gap-6" data-purpose="charts-row">
-<!-- Revenue Overview Chart Card (Span 2) -->
-<div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-[#ebf0ed] shadow-xs flex flex-col justify-between" data-purpose="revenue-chart-card">
-<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-4">
-<div class="flex items-center space-x-2">
-<svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<h3 class="font-bold text-gray-900 text-sm">Revenue Overview</h3>
-</div>
-<!-- Filters -->
-<div class="flex items-center space-x-3">
-<!-- Switch Tabs -->
-<div class="bg-gray-100/80 p-1 rounded-xl flex items-center text-xs">
-<button class="bg-[#1d3c34] text-white px-3 py-1 rounded-lg font-semibold shadow-xs">Revenue</button>
-<button class="text-gray-500 hover:text-gray-800 px-3 py-1 font-medium transition-colors">Invoices</button>
-<button class="text-gray-500 hover:text-gray-800 px-3 py-1 font-medium transition-colors">Payments</button>
-</div>
-<!-- Time dropdown -->
 <div class="relative">
-<button class="flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50">
-<span class="">Last 6 months</span>
-<svg class="w-3 h-3 text-gray-400 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input autocomplete="current-password" class="w-full px-4 py-3 text-sm bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0A291E] focus:border-transparent transition pr-11" id="password" name="password" placeholder="Enter your password" required="" type="password"/>
+<!-- Toggle Password Visibility Icon Button -->
+<button aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none" id="togglePassword" type="button">
+<svg class="h-4 w-4" fill="none" id="eyeIcon" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
 </button>
 </div>
 </div>
-</div>
-<!-- Chart Graphic (SVG Area & Columns) -->
-<div class="relative w-full h-64 mt-2">
-<svg class="w-full h-full" fill="none" viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
-<stop offset="0%" stop-color="#245849" stop-opacity="0.18"></stop>
-<stop offset="100%" stop-color="#245849" stop-opacity="0.0"></stop>
-</linearGradient>
-</defs>
-<!-- Y-Axis Grid Lines & Labels -->
-<!-- ₹ 20L -->
-<line class="chart-grid-line" x1="40" x2="680" y1="20" y2="20"></line>
-<text class="text-[10px] fill-gray-400 font-medium" text-anchor="end" x="30" y="24">₹ 20L</text>
-<!-- ₹ 15L -->
-<line class="chart-grid-line" x1="40" x2="680" y1="65" y2="65"></line>
-<text class="text-[10px] fill-gray-400 font-medium" text-anchor="end" x="30" y="69">₹ 15L</text>
-<!-- ₹ 10L -->
-<line class="chart-grid-line" x1="40" x2="680" y1="110" y2="110"></line>
-<text class="text-[10px] fill-gray-400 font-medium" text-anchor="end" x="30" y="114">₹ 10L</text>
-<!-- ₹ 5L -->
-<line class="chart-grid-line" x1="40" x2="680" y1="155" y2="155"></line>
-<text class="text-[10px] fill-gray-400 font-medium" text-anchor="end" x="30" y="159">₹ 5L</text>
-<!-- 0 -->
-<line stroke="#eaefec" stroke-width="1.2" x1="40" x2="680" y1="200" y2="200"></line>
-<text class="text-[10px] fill-gray-400 font-medium" text-anchor="end" x="30" y="204">0</text>
-<!-- Subtle Bar Columns behind the spline -->
-<!-- May: x=90 -->
-<rect fill="#d2e7de" fill-opacity="0.6" height="40" rx="3" width="24" x="78" y="160"></rect>
-<!-- Jun: x=190 -->
-<rect fill="#d2e7de" fill-opacity="0.6" height="55" rx="3" width="24" x="178" y="145"></rect>
-<!-- Jul: x=290 -->
-<rect fill="#d2e7de" fill-opacity="0.6" height="70" rx="3" width="24" x="278" y="130"></rect>
-<!-- Aug: x=400 -->
-<rect fill="#d2e7de" fill-opacity="0.6" height="60" rx="3" width="24" x="388" y="140"></rect>
-<!-- Sep: x=510 -->
-<rect fill="#d2e7de" fill-opacity="0.6" height="90" rx="3" width="24" x="498" y="110"></rect>
-<!-- Oct: x=620 -->
-<rect fill="#d2e7de" fill-opacity="0.6" height="75" rx="3" width="24" x="608" y="125"></rect>
-<!-- Area Fill under curve -->
-<path d="M 90 170 C 140 140, 150 120, 200 130 C 250 140, 260 115, 310 118 C 360 122, 380 135, 430 115 C 470 100, 500 85, 545 80 C 590 75, 630 65, 650 50 L 650 200 L 90 200 Z" fill="url(#areaGradient)"></path>
-<!-- Revenue Line (Smooth Bezier) -->
-<path d="M 90 170 C 140 140, 150 120, 200 130 C 250 140, 260 115, 310 118 C 360 122, 380 135, 430 115 C 470 100, 500 85, 545 80 C 590 75, 630 65, 650 50" fill="none" stroke="#235446" stroke-linecap="round" stroke-width="2.5"></path>
-<!-- Highlight Marker Point on Sep (x=545, y=80) -->
-<circle cx="545" cy="80" fill="#235446" r="5" stroke="#ffffff" stroke-width="2.5"></circle>
-<!-- Tooltip Marker -->
-<g transform="translate(500, 28)">
-<rect fill="#1b3930" height="38" rx="7" width="90" x="0" y="0"></rect>
-<path d="M 45 38 L 45 44" stroke="#1b3930" stroke-width="2"></path>
-<text fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle" x="45" y="16">₹ 14,20,000</text>
-<text fill="#9cbdb2" font-size="9" font-weight="500" text-anchor="middle" x="45" y="29">Sep 2026</text>
-</g>
-<!-- X-Axis Labels -->
-<text class="text-[11px] fill-gray-400 font-semibold" text-anchor="middle" x="90" y="222">May</text>
-<text class="text-[11px] fill-gray-400 font-semibold" text-anchor="middle" x="190" y="222">Jun</text>
-<text class="text-[11px] fill-gray-400 font-semibold" text-anchor="middle" x="290" y="222">Jul</text>
-<text class="text-[11px] fill-gray-400 font-semibold" text-anchor="middle" x="400" y="222">Aug</text>
-<text class="text-[11px] fill-gray-400 font-semibold" text-anchor="middle" x="510" y="222">Sep</text>
-<text class="text-[11px] fill-gray-400 font-semibold" text-anchor="middle" x="620" y="222">Oct</text>
-</svg>
-</div>
-</div>
-<!-- Subscription Status Donut Chart Card -->
-<div class="bg-white rounded-2xl p-6 border border-[#ebf0ed] shadow-xs flex flex-col justify-between" data-purpose="status-donut-card"><div class="">
-<div class="flex items-center space-x-2 mb-6">
-<svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<h3 class="font-bold text-gray-900 text-sm">Subscription Status</h3>
-</div>
-<div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-7 py-3 px-2 sm:px-4">
-<div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center mx-auto sm:mx-0">
-<svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-<circle cx="50" cy="50" fill="transparent" r="38" stroke="#25594a" stroke-dasharray="162.3 238.8" stroke-dashoffset="0" stroke-width="14"></circle>
-<circle cx="50" cy="50" fill="transparent" r="38" stroke="#9ca3af" stroke-dasharray="26.2 238.8" stroke-dashoffset="-162.3" stroke-width="14"></circle>
-<circle cx="50" cy="50" fill="transparent" r="38" stroke="#f6a287" stroke-dasharray="16.7 238.8" stroke-dashoffset="-188.5" stroke-width="14"></circle>
-<circle cx="50" cy="50" fill="transparent" r="38" stroke="#fbd38d" stroke-dasharray="11.9 238.8" stroke-dashoffset="-205.2" stroke-width="14"></circle>
-<circle cx="50" cy="50" fill="transparent" r="38" stroke="#c0e2d3" stroke-dasharray="21.5 238.8" stroke-dashoffset="-217.1" stroke-width="14"></circle>
-</svg>
-<div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-<span class="text-xl font-bold text-gray-900 leading-none">892</span>
-<span class="text-[11px] font-medium text-gray-500 mt-1 leading-none">Active</span>
-</div>
-</div>
-<div class="space-y-3 flex-1 w-full">
-<div class="flex items-center justify-between text-xs py-0.5">
-<div class="flex items-center space-x-2 min-w-0">
-<span class="w-2.5 h-2.5 rounded-full bg-[#25594a] flex-shrink-0"></span>
-<span class="font-medium text-gray-600 truncate">Active</span>
-</div>
-<div class="flex items-center space-x-3 flex-shrink-0">
-<span class="font-bold text-gray-900">892</span>
-<span class="text-gray-400 text-[11px] w-7 text-right font-medium">68%</span>
-</div>
-</div>
-<div class="flex items-center justify-between text-xs py-0.5">
-<div class="flex items-center space-x-2 min-w-0">
-<span class="w-2.5 h-2.5 rounded-full bg-[#c0e2d3] flex-shrink-0"></span>
-<span class="font-medium text-gray-600 truncate">Trial</span>
-</div>
-<div class="flex items-center space-x-3 flex-shrink-0">
-<span class="font-bold text-gray-900">124</span>
-<span class="text-gray-400 text-[11px] w-7 text-right font-medium">9%</span>
-</div>
-</div>
-<div class="flex items-center justify-between text-xs py-0.5">
-<div class="flex items-center space-x-2 min-w-0">
-<span class="w-2.5 h-2.5 rounded-full bg-[#fbd38d] flex-shrink-0"></span>
-<span class="font-medium text-gray-600 truncate">Paused</span>
-</div>
-<div class="flex items-center space-x-3 flex-shrink-0">
-<span class="font-bold text-gray-900">68</span>
-<span class="text-gray-400 text-[11px] w-7 text-right font-medium">5%</span>
-</div>
-</div>
-<div class="flex items-center justify-between text-xs py-0.5">
-<div class="flex items-center space-x-2 min-w-0">
-<span class="w-2.5 h-2.5 rounded-full bg-[#f6a287] flex-shrink-0"></span>
-<span class="font-medium text-gray-600 truncate">Pending</span>
-</div>
-<div class="flex items-center space-x-3 flex-shrink-0">
-<span class="font-bold text-gray-900">92</span>
-<span class="text-gray-400 text-[11px] w-7 text-right font-medium">7%</span>
-</div>
-</div>
-<div class="flex items-center justify-between text-xs py-0.5">
-<div class="flex items-center space-x-2 min-w-0">
-<span class="w-2.5 h-2.5 rounded-full bg-gray-400 flex-shrink-0"></span>
-<span class="font-medium text-gray-600 truncate">Closed</span>
-</div>
-<div class="flex items-center space-x-3 flex-shrink-0">
-<span class="font-bold text-gray-900">144</span>
-<span class="text-gray-400 text-[11px] w-7 text-right font-medium">11%</span>
-</div>
-</div>
-</div>
-</div>
-</div></div>
-</section>
-<!-- END: MidChartsSection -->
-<!-- BEGIN: TablesAndActivitySection -->
-<section class="grid grid-cols-1 lg:grid-cols-3 gap-6" data-purpose="invoices-and-renewals">
-<!-- Recent Invoices Table (Span 2) -->
-<div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-[#ebf0ed] shadow-xs flex flex-col justify-between" data-purpose="recent-invoices">
-<div>
-<div class="flex items-center justify-between mb-4">
-<div class="flex items-center space-x-2">
-<svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<h3 class="font-bold text-gray-900 text-sm">Recent Invoices</h3>
-</div>
-<a class="inline-flex items-center text-xs font-semibold text-gray-700 hover:text-brand-forest transition-colors" href="#">
-<span class="">View all</span>
-<svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-</a>
-</div>
-<!-- Invoices Table -->
-<div class="overflow-x-auto">
-<table class="w-full text-left text-xs">
-<thead>
-<tr class="border-b border-gray-100 text-gray-500 font-semibold">
-<th class="pb-3 font-semibold">Invoice #</th>
-<th class="pb-3 font-semibold">Customer</th>
-<th class="pb-3 font-semibold">Subscription</th>
-<th class="pb-3 font-semibold">Amount</th>
-<th class="pb-3 font-semibold">Status</th>
-<th class="pb-3 font-semibold">Due Date</th>
-<th class="pb-3 font-semibold text-right">Actions</th>
-</tr>
-</thead>
-<tbody class="divide-y divide-gray-50">
-<!-- Row 1 -->
-<tr class="hover:bg-gray-50/60 transition-colors">
-<td class="py-3 font-semibold text-gray-800">INV-2026-1042</td>
-<td class="py-3 text-gray-700 font-medium">Acme Corp</td>
-<td class="py-3 text-gray-500">BUS-2456</td>
-<td class="py-3 font-semibold text-gray-900">₹ 24,000</td>
-<td class="py-3">
-<span class="inline-block px-2.5 py-0.5 font-semibold text-[11px] rounded-full bg-emerald-50 text-emerald-700">Paid</span>
-</td>
-<td class="py-3 text-gray-500">26 Oct 2026</td>
-<td class="py-3 text-right">
-<button class="text-gray-400 hover:text-gray-600 p-1">
-<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5"></circle><circle cx="10" cy="10" r="1.5"></circle><circle cx="10" cy="16" r="1.5"></circle></svg>
-</button>
-</td>
-</tr>
-<!-- Row 2 -->
-<tr class="hover:bg-gray-50/60 transition-colors">
-<td class="py-3 font-semibold text-gray-800">INV-2026-1041</td>
-<td class="py-3 text-gray-700 font-medium">TechNova Solutions</td>
-<td class="py-3 text-gray-500">BUS-2455</td>
-<td class="py-3 font-semibold text-gray-900">₹ 18,500</td>
-<td class="py-3">
-<span class="inline-block px-2.5 py-0.5 font-semibold text-[11px] rounded-full bg-amber-50 text-amber-700">Pending</span>
-</td>
-<td class="py-3 text-gray-500">28 Oct 2026</td>
-<td class="py-3 text-right">
-<button class="text-gray-400 hover:text-gray-600 p-1">
-<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5"></circle><circle cx="10" cy="10" r="1.5"></circle><circle cx="10" cy="16" r="1.5"></circle></svg>
-</button>
-</td>
-</tr>
-<!-- Row 3 -->
-<tr class="hover:bg-gray-50/60 transition-colors">
-<td class="py-3 font-semibold text-gray-800">INV-2026-1040</td>
-<td class="py-3 text-gray-700 font-medium">GreenLeaf Retail</td>
-<td class="py-3 text-gray-500">BUS-2454</td>
-<td class="py-3 font-semibold text-gray-900">₹ 12,000</td>
-<td class="py-3">
-<span class="inline-block px-2.5 py-0.5 font-semibold text-[11px] rounded-full bg-rose-50 text-rose-600">Overdue</span>
-</td>
-<td class="py-3 text-rose-600 font-medium">20 Oct 2026</td>
-<td class="py-3 text-right">
-<button class="text-gray-400 hover:text-gray-600 p-1">
-<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5"></circle><circle cx="10" cy="10" r="1.5"></circle><circle cx="10" cy="16" r="1.5"></circle></svg>
-</button>
-</td>
-</tr>
-<!-- Row 4 -->
-<tr class="hover:bg-gray-50/60 transition-colors">
-<td class="py-3 font-semibold text-gray-800">INV-2026-1039</td>
-<td class="py-3 text-gray-700 font-medium">Skyline Media</td>
-<td class="py-3 text-gray-500">BUS-2453</td>
-<td class="py-3 font-semibold text-gray-900">₹ 36,000</td>
-<td class="py-3">
-<span class="inline-block px-2.5 py-0.5 font-semibold text-[11px] rounded-full bg-emerald-50 text-emerald-700">Paid</span>
-</td>
-<td class="py-3 text-gray-500">18 Oct 2026</td>
-<td class="py-3 text-right">
-<button class="text-gray-400 hover:text-gray-600 p-1">
-<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5"></circle><circle cx="10" cy="10" r="1.5"></circle><circle cx="10" cy="16" r="1.5"></circle></svg>
-</button>
-</td>
-</tr>
-<!-- Row 5 -->
-<tr class="hover:bg-gray-50/60 transition-colors">
-<td class="py-3 font-semibold text-gray-800">INV-2026-1038</td>
-<td class="py-3 text-gray-700 font-medium">Bright Foods</td>
-<td class="py-3 text-gray-500">BUS-2452</td>
-<td class="py-3 font-semibold text-gray-900">₹ 8,500</td>
-<td class="py-3">
-<span class="inline-block px-2.5 py-0.5 font-semibold text-[11px] rounded-full bg-blue-50 text-blue-600">Sent</span>
-</td>
-<td class="py-3 text-gray-500">25 Oct 2026</td>
-<td class="py-3 text-right">
-<button class="text-gray-400 hover:text-gray-600 p-1">
-<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="4" r="1.5"></circle><circle cx="10" cy="10" r="1.5"></circle><circle cx="10" cy="16" r="1.5"></circle></svg>
-</button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<!-- Upcoming Renewals Card -->
-<div class="bg-white rounded-2xl p-6 border border-[#ebf0ed] shadow-xs flex flex-col justify-between" data-purpose="upcoming-renewals">
-<div>
-<div class="flex items-center justify-between mb-4">
-<div class="flex items-center space-x-2">
-<svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect>
-<line x1="16" x2="16" y1="2" y2="6"></line>
-<line x1="8" x2="8" y1="2" y2="6"></line>
-<line x1="3" x2="21" y1="10" y2="10"></line>
-</svg>
-<h3 class="font-bold text-gray-900 text-sm">Upcoming Renewals</h3>
-</div>
-<a class="inline-flex items-center text-xs font-semibold text-gray-700 hover:text-brand-forest transition-colors" href="#">
-<span class="">View all</span>
-<svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-</a>
-</div>
-<!-- Renewal Items List -->
-<div class="space-y-4">
-<!-- Item 1: Acme Corp -->
-<div class="flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<div>
-<h5 class="text-xs font-bold text-gray-900 leading-tight">Acme Corp</h5>
-<span class="text-[11px] text-gray-400 font-medium">BUS-2456</span>
-</div>
-</div>
-<div class="text-right">
-<div class="text-xs font-bold text-gray-900">₹ 24,000</div>
-<span class="inline-block mt-0.5 px-2 py-0.5 text-[10px] font-semibold bg-amber-50 text-amber-700 rounded-md">In 3 days</span>
-</div>
-</div>
-<!-- Item 2: Skyline Media -->
-<div class="flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728M8.464 15.536a5 5 0 010-7.072m7.072 0a5 5 0 010 7.072M13 12a1 1 0 11-2 0 1 1 0 012 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<div>
-<h5 class="text-xs font-bold text-gray-900 leading-tight">Skyline Media</h5>
-<span class="text-[11px] text-gray-400 font-medium">BUS-2453</span>
-</div>
-</div>
-<div class="text-right">
-<div class="text-xs font-bold text-gray-900">₹ 36,000</div>
-<span class="inline-block mt-0.5 px-2 py-0.5 text-[10px] font-semibold bg-amber-50 text-amber-700 rounded-md">In 5 days</span>
-</div>
-</div>
-<!-- Item 3: GreenLeaf Retail -->
-<div class="flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<div>
-<h5 class="text-xs font-bold text-gray-900 leading-tight">GreenLeaf Retail</h5>
-<span class="text-[11px] text-gray-400 font-medium">BUS-2454</span>
-</div>
-</div>
-<div class="text-right">
-<div class="text-xs font-bold text-gray-900">₹ 12,000</div>
-<span class="inline-block mt-0.5 px-2 py-0.5 text-[10px] font-semibold bg-amber-50 text-amber-700 rounded-md">In 7 days</span>
-</div>
-</div>
-<!-- Item 4: Nova Tech -->
-<div class="flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<div>
-<h5 class="text-xs font-bold text-gray-900 leading-tight">Nova Tech</h5>
-<span class="text-[11px] text-gray-400 font-medium">BUS-2451</span>
-</div>
-</div>
-<div class="text-right">
-<div class="text-xs font-bold text-gray-900">₹ 18,500</div>
-<span class="inline-block mt-0.5 px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 rounded-md">In 9 days</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- END: TablesAndActivitySection -->
-<!-- BEGIN: BottomWidgetsSection -->
-<section class="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6" data-purpose="recent-activity-and-actions">
-<!-- Recent Activity Card -->
-<div class="bg-white rounded-2xl p-6 border border-[#ebf0ed] shadow-xs flex flex-col justify-between" data-purpose="recent-activity-timeline">
-<div>
-<div class="flex items-center justify-between mb-4">
-<div class="flex items-center space-x-2">
-<svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<h3 class="font-bold text-gray-900 text-sm">Recent Activity</h3>
-</div>
-<a class="inline-flex items-center text-xs font-semibold text-gray-700 hover:text-brand-forest transition-colors" href="#">
-<span class="">View all</span>
-<svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-</a>
-</div>
-<!-- Activity List -->
-<div class="space-y-3 pt-1">
-<!-- Item 1 -->
-<div class="flex items-center justify-between text-xs">
-<div class="flex items-center space-x-3">
-<span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
-<span class="text-gray-700 font-medium truncate">New subscription created for TechNova Solutions</span>
-</div>
-<span class="text-gray-400 font-medium text-[11px] whitespace-nowrap pl-2">2 hours ago</span>
-</div>
-<!-- Item 2 -->
-<div class="flex items-center justify-between text-xs">
-<div class="flex items-center space-x-3">
-<span class="w-2 h-2 rounded-full bg-emerald-700 flex-shrink-0"></span>
-<span class="text-gray-700 font-medium truncate">Payment received – INV-2026-1042 (₹ 24,000)</span>
-</div>
-<span class="text-gray-400 font-medium text-[11px] whitespace-nowrap pl-2">4 hours ago</span>
-</div>
-<!-- Item 3 -->
-<div class="flex items-center justify-between text-xs">
-<div class="flex items-center space-x-3">
-<span class="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0"></span>
-<span class="text-gray-700 font-medium truncate">Plan updated for Skyline Media</span>
-</div>
-<span class="text-gray-400 font-medium text-[11px] whitespace-nowrap pl-2">6 hours ago</span>
-</div>
-<!-- Item 4 -->
-<div class="flex items-center justify-between text-xs">
-<div class="flex items-center space-x-3">
-<span class="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0"></span>
-<span class="text-gray-700 font-medium truncate">New customer registered – GreenLeaf Retail</span>
-</div>
-<span class="text-gray-400 font-medium text-[11px] whitespace-nowrap pl-2">8 hours ago</span>
-</div>
-</div>
-</div>
-</div>
-<!-- Quick Actions Card -->
-<div class="bg-white rounded-2xl p-6 border border-[#ebf0ed] shadow-xs flex flex-col justify-between" data-purpose="quick-actions-bar">
-<div>
-<div class="flex items-center space-x-2 mb-4">
-<svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-<circle cx="12" cy="12" r="10"></circle>
-<line x1="12" x2="12" y1="8" y2="16"></line>
-<line x1="8" x2="16" y1="12" y2="12"></line>
-</svg>
-<h3 class="font-bold text-gray-900 text-sm">Quick Actions</h3>
-</div>
-<!-- 4 Action Tiles -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-<!-- Tile 1: Add Customer -->
-<button class="bg-[#eef6f2] hover:bg-[#e3f0e9] border border-[#e1eee7] rounded-xl p-3.5 flex flex-col items-center justify-center text-center transition-all group">
-<div class="w-7 h-7 mb-2 flex items-center justify-center text-[#245849]">
-<svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<span class="text-xs font-semibold text-gray-800 leading-tight">Add Customer</span>
-</button>
-<!-- Tile 2: Create Product -->
-<button class="bg-[#fef7eb] hover:bg-[#fcf0dc] border border-[#faeeda] rounded-xl p-3.5 flex flex-col items-center justify-center text-center transition-all group">
-<div class="w-7 h-7 mb-2 flex items-center justify-center text-[#c28422]">
-<svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<span class="text-xs font-semibold text-gray-800 leading-tight">Create Product</span>
-</button>
-<!-- Tile 3: New Subscription -->
-<button class="bg-[#eef8f4] hover:bg-[#e1f3ec] border border-[#dff0e7] rounded-xl p-3.5 flex flex-col items-center justify-center text-center transition-all group">
-<div class="w-7 h-7 mb-2 flex items-center justify-center text-[#2d7d6f]">
-<svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<span class="text-xs font-semibold text-gray-800 leading-tight">New Subscription</span>
-</button>
-<!-- Tile 4: Generate Invoice -->
-<button class="bg-[#fdedeb] hover:bg-[#fae1dd] border border-[#f7dbd7] rounded-xl p-3.5 flex flex-col items-center justify-center text-center transition-all group">
-<div class="w-7 h-7 mb-2 flex items-center justify-center text-[#d94a38]">
-<svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-<path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<span class="text-xs font-semibold text-gray-800 leading-tight">Generate Invoice</span>
-</button>
-</div>
-</div>
-</div>
-</section>
-<!-- END: BottomWidgetsSection -->
-</div>
+<!-- Remember Me Checkbox -->
+<div class="flex items-center pt-0.5">
+<input class="h-4 w-4 text-[#0A291E] focus:ring-[#0A291E] border-gray-300 rounded cursor-pointer" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-2.5 block text-xs font-medium text-gray-600 cursor-pointer select-none" for="remember-me">
+            Remember me
+          </label>
+</div>
+<!-- Submit CTA Button (Black Pill Button) -->
+<div class="pt-2">
+<button class="w-full bg-black hover:bg-neutral-900 active:bg-neutral-800 text-white font-semibold py-3.5 px-6 rounded-full text-sm transition-all duration-150 shadow-sm hover:shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" type="submit">
+            Log in
+          </button>
+</div>
+</form>
+</div>
+<!-- Legal Footer -->
+<footer class="text-center text-xs text-gray-400" data-purpose="terms-and-privacy">
+      By continuing, you agree to our 
+      <a class="text-gray-800 font-semibold underline underline-offset-2 hover:text-black" href="#terms">Terms of Service</a> 
+      and 
+      <a class="text-gray-800 font-semibold underline underline-offset-2 hover:text-black" href="#privacy">Privacy Policy</a>
+</footer>
 </main>
-<!-- END: MainContent -->
+<!-- END: RightAuthArea -->
+</div>
+<!-- Interactive JavaScript for Password Visibility Toggle -->
+<script data-purpose="password-visibility-toggle">
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
 
-
+    if (toggleBtn && passwordInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        
+        // Switch eye icon states
+        if (isPassword) {
+          toggleBtn.innerHTML = `
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+            </svg>
+          `;
+        } else {
+          toggleBtn.innerHTML = `
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          `;
+        }
+      });
+    }
+  });
+</script>
 </body></html>
