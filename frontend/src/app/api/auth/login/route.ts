@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
       email: user.email,
       name: user.name,
       role: user.role,
+      customerId: user.customerId,
     });
 
     // Determine redirect destination according to RBAC
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         name: user.name,
         role: user.role,
+      customerId: user.customerId,
       },
       redirectUrl,
     });
