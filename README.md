@@ -222,45 +222,38 @@ RAZORPAY_KEY_SECRET="your_razorpay_secret"
 ```bash
 cd frontend
 
-# Install dependencies using pnpm
+# Install dependencies (pnpm or npm)
+npm install
+# or
 npx pnpm install
 
 # Generate Prisma client bindings
+npx prisma generate
+# or
 npx pnpm prisma generate
 
 # Apply migrations / sync schema
+npx prisma db push
+# or
 npx pnpm prisma db push
 ```
 
 ### 4. Running the Development Server
 ```bash
+npm run dev
+# or
 npx pnpm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### 5. Running the Automated Test Suite
 ```bash
+npm test
+# or
 npx pnpm test
 # or
 npx vitest run
 ```
-
----
-
-## 🛡️ Hackathon Evaluation Checklist
-
-| Category | Feature | Status | Notes |
-|---|---|---|---|
-| **Billing Engine** | Recurring Billing Batch | ✅ Complete | Dynamic interval renewals with idempotency protection |
-| **Dunning Engine** | 3-Stage Smart Dunning | ✅ Complete | Day 1-6 reminder $\rightarrow$ Day 7 +5% late fee $\rightarrow$ Day 10 pause |
-| **Notifications** | Transactional Emails | ✅ Complete | Real Gmail SMTP dispatch for dunning & auth |
-| **Artificial Intelligence** | Customer Support Chatbot | ✅ Complete | Groq `openai/gpt-oss-120b` with live DB context injection |
-| **Artificial Intelligence** | Churn Risk Predictor | ✅ Complete | Real-time risk scoring and mitigation strategies on dashboard |
-| **Worker Operations** | Execution Audit Log | ✅ Complete | Real-time filterable log at `/billing-events` |
-| **Payments** | Payment Gateway | ✅ Complete | Razorpay order creation & HMAC verification |
-| **Catalog** | Products, Plans, Taxes, Discounts | ✅ Complete | Full CRUD with multi-tier pricing |
-| **Security & RBAC** | Edge Auth Guards | ✅ Complete | Role-segregated navigation with bcrypt password security |
-| **Code Quality** | Automated Test Coverage | ✅ Complete | 8/8 Vitest tests passing |
 
 ---
 
