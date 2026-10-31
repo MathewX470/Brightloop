@@ -326,7 +326,7 @@ export function AdminAssistantWidget() {
           <div className="bg-gradient-to-r from-[#11241f] via-[#16332c] to-[#1d3c34] p-4 text-white flex items-center justify-between shadow-xs select-none">
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 rounded-2xl bg-emerald-400/20 border border-emerald-400/40 flex items-center justify-center text-xl shrink-0 shadow-inner">
-                ⚡
+                💬
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
@@ -544,7 +544,7 @@ export function AdminAssistantWidget() {
           </svg>
         ) : (
           <>
-            <span className="text-2xl group-hover:scale-110 transition-transform">⚡</span>
+            <span className="text-2xl group-hover:animate-pulse">💬</span>
             <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-white animate-pulse" />
           </>
         )}
