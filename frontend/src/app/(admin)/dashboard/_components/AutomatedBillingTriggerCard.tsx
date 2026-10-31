@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 interface BillingResult {
@@ -16,8 +16,10 @@ interface DunningResult {
 }
 
 export function AutomatedBillingTriggerCard() {
+  const isRunningRef = useRef(false);
   const router = useRouter();
   const [isRunning, setIsRunning] = useState(false);
+  const [countdown, setCountdown] = useState<number>(60);
   const [lastReport, setLastReport] = useState<{
     billing: BillingResult;
     dunning: DunningResult;
@@ -25,7 +27,9 @@ export function AutomatedBillingTriggerCard() {
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleRunBilling = async () => {
+  const handleRunBilling = async (isAuto = true) => {
+    if (isRunningRef.current) return; // Prevent overlapping runs
+    isRunningRef.current = true;
     setIsRunning(true);
     setError(null);
 
@@ -33,7 +37,10 @@ export function AutomatedBillingTriggerCard() {
       const response = await fetch("/api/admin/billing/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ targetDate: new Date() }),
+        body: JSON.stringify({
+          targetDate: new Date(),
+          forceDispatch: isAuto, // Force email dispatch during automated intervals
+        }),
       });
 
       const data = await response.json();
@@ -47,15 +54,31 @@ export function AutomatedBillingTriggerCard() {
         dunning: data.dunning,
         timestamp: new Date().toLocaleTimeString(),
       });
-
-      // Refresh server-side dashboard metrics automatically
-      router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error executing automated billing job.");
     } finally {
+      isRunningRef.current = false;
       setIsRunning(false);
     }
   };
+
+  // Run automatically every 60 seconds
+  useEffect(() => {
+    // 1-second countdown ticker
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          handleRunBilling(true);
+          return 60;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
 
   return (
     <div className="bg-gradient-to-r from-[#142c26] to-[#1d3c34] text-white rounded-2xl p-6 shadow-md border border-[#2f695a]/40 relative overflow-hidden">
@@ -77,8 +100,24 @@ export function AutomatedBillingTriggerCard() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          {/* Automated Active Status Badge */}
+          <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white/10 border border-emerald-400/30 text-emerald-200 text-xs font-medium">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span>
+              {isRunning ? (
+                <strong className="text-white">Executing Cycle...</strong>
+              ) : (
+                <>Automated: Running (next cycle in <strong className="text-white font-mono">{countdown}s</strong>)</>
+              )}
+            </span>
+          </div>
+
+          {/* Manual Run Now Option */}
           <button
-            onClick={handleRunBilling}
+            onClick={() => handleRunBilling(true)}
             disabled={isRunning}
             className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${
               lastReport
@@ -92,21 +131,21 @@ export function AutomatedBillingTriggerCard() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                 </svg>
-                Processing Subscriptions...
+                Processing...
               </>
             ) : lastReport ? (
               <>
                 <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
-                Completed at {lastReport.timestamp} (Run Again)
+                Completed at {lastReport.timestamp} (Run Now)
               </>
             ) : (
               <>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                ⚡ Trigger Billing Run Now
+                ⚡ Trigger Now
               </>
             )}
           </button>
