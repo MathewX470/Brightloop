@@ -520,10 +520,6 @@ export default function Home() {
                   Autonomous subscription management and recurring billing platform engineered for high-velocity software
                   and services businesses.
                 </p>
-                <div className="flex items-center gap-2 text-xs text-emerald-400 pt-1">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                  All billing engines operational
-                </div>
               </div>
               <div className="space-y-3 text-xs md:col-span-2">
                 <div className="font-semibold text-white uppercase tracking-wider mb-2">Navigation</div>

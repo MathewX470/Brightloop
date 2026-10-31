@@ -5,6 +5,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { PortalSidebar } from "./PortalSidebar";
 import { PortalTopbar } from "./PortalTopbar";
+import { CustomerChatWidget } from "./CustomerChatWidget";
 
 export interface PortalLayoutProps {
   children: React.ReactNode;
@@ -94,6 +95,7 @@ export function PortalLayout({
           </span>
         </footer>
       </div>
+      <CustomerChatWidget />
     </div>
   );
 }
