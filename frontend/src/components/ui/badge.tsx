@@ -1,6 +1,15 @@
 import * as React from "react";
 
-export type BadgeVariant = "default" | "primary" | "success" | "warning" | "danger" | "info" | "neutral" | "outline";
+export type BadgeVariant =
+  | "default"
+  | "primary"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info"
+  | "neutral"
+  | "outline";
+
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
   size?: "sm" | "md" | "lg";
@@ -19,13 +28,43 @@ const styles: Record<BadgeVariant, string> = {
   neutral: "bg-slate-50 text-slate-600 ring-1 ring-inset ring-slate-200",
   outline: "border border-slate-300 bg-white text-slate-700",
 };
-const dots: Partial<Record<BadgeVariant, string>> = { success: "bg-emerald-500", warning: "bg-amber-500", danger: "bg-rose-500", info: "bg-sky-500", primary: "bg-indigo-500", default: "bg-slate-400", neutral: "bg-slate-400" };
 
-export function Badge({ variant = "default", size = "md", dot = false, pill = false, icon, className = "", children, ...props }: BadgeProps) {
-  const sizes = { sm: "px-2 py-0.5 text-[11px]", md: "px-2.5 py-1 text-xs", lg: "px-3 py-1.5 text-sm" };
-  return <span className={`inline-flex max-w-full items-center gap-1.5 font-medium ${pill ? "rounded-full" : "rounded-md"} ${sizes[size]} ${styles[variant]} ${className}`} {...props}>
-    {dot && <span className={`size-1.5 shrink-0 rounded-full ${dots[variant] ?? "bg-current"}`} />}
-    {icon && <span className="shrink-0 [&>svg]:size-3.5">{icon}</span>}
-    {children}
-  </span>;
+const dots: Partial<Record<BadgeVariant, string>> = {
+  success: "bg-emerald-500",
+  warning: "bg-amber-500",
+  danger: "bg-rose-500",
+  info: "bg-sky-500",
+  primary: "bg-indigo-500",
+  default: "bg-slate-400",
+  neutral: "bg-slate-400",
+};
+
+export function Badge({
+  variant = "default",
+  size = "md",
+  dot = false,
+  pill = false,
+  icon,
+  className = "",
+  children,
+  ...props
+}: BadgeProps) {
+  const sizes = {
+    sm: "px-2 py-0.5 text-[11px]",
+    md: "px-2.5 py-1 text-xs",
+    lg: "px-3 py-1.5 text-sm",
+  };
+
+  return (
+    <span
+      className={`inline-flex max-w-full items-center gap-1.5 font-medium ${
+        pill ? "rounded-full" : "rounded-md"
+      } ${sizes[size]} ${styles[variant]} ${className}`}
+      {...props}
+    >
+      {dot && <span className={`size-1.5 shrink-0 rounded-full ${dots[variant] ?? "bg-current"}`} />}
+      {icon && <span className="shrink-0 [&>svg]:size-3.5">{icon}</span>}
+      {children}
+    </span>
+  );
 }
