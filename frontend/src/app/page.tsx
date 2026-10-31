@@ -20,13 +20,13 @@ type Project = {
 };
 
 const imageUrls = {
-  hero: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz5YjA3JqircR_xBj_ZtlJU5XNrtctbtvZ9xDVYucKPP13NYtG4t_ody9tZHkdjgyral_tWqN-U3cTKnMkuIoXlzd7jZGDzLfDEPKagnMgjYyVGQiTfB8pP0hs5wLLSzy_puRRBRY58J-76XJtQZ-6bMZijkYttGfca7KQ9tLa1DSSOHmpis231HSwFwJOIGVH17rIZH7BMvu1oEvYlaAuJ5SCdz-3H3EfKncfdsc",
+  hero: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
   team: "https://lh3.googleusercontent.com/aida-public/AB6AXuDoZr55EMz8yQpoPlXLJ9K3YnZo-Wdd6lmvO5Xt2DpfEcFAM5T_jV2Xe1nwIxN4GMIgFeAr-ji6KOdARqJf8iRXGiR-11lrUQ-boHGhg2cbzyqvhNptdeW0InCr00Y6sJxEW4-uAwZY0kDpsCHuYtvBG061I-H-bTNj8MJKjtw9q_0xChmO2TBWPMCwtpvjfmvmGQo18nUP7zh68z1msqYIjLHnG8K51LCSLDFV-1g",
-  product: "https://lh3.googleusercontent.com/aida-public/AB6AXuCoWBy2OeN0Fxw4RBeUbgIzRznZQK6CoaZGeh-nGGxc7DCMpHG7qOYAGgRvGNkAEeiICWSO7gtGp1VwapIWkueAJH7MkfhyCYFKtuWYP3JB23isPTM7uDOB3Hj90X-QhPr0p9QVx2Z0vi1HGutx97uF6AknhzkFkK_PxPqXUK4xYLvYLcpYlu_brhYrOGlsxUVD0rhPZqXtBj9s1nXYJSrKZeZkk3K-IIm9YMIpYxg",
+  product: "https://gocious.com/hs-fs/hubfs/execute%20product%20launch%20plan.jpg?width=3751&height=2110&name=execute%20product%20launch%20plan.jpg",
   billing: "https://lh3.googleusercontent.com/aida-public/AB6AXuDqkZHIRj0rxWmhLe_ad4TAito_JADb6TfTImX5cRgHyk-OEgIgvaHN9HRXtuhZw8Rbrs85xPs3fJSuzGI3gcULHvPofeK8MOMPFiuLaCrk4Il006_qvrU4EuHe5_vHOhOz4zY2pbpHCFtbCw4nvrNvaOYyfVb9JEpQ02FQFuZthWFEAXeo_fycgRcAkdivWCaEA7Xe5bzfPCUIkzNh7zdJL5UlIDhTvrkI2IRS-OI",
-  analytics: "https://lh3.googleusercontent.com/aida-public/AB6AXuBKOYpkVJIiTwGxyByTJMeFyPFu0E0_T1sdpAHr93OmZpxa3Glyjw138NGaUGjHpHQcWb5xt-BTrrOUIXoMzOCkZPX61fDlJplvupwClIpthFMx0SSWcg7gZHjHq9XLBncMUZ1xrdZtvQj4pznuH7GviBSv9Qe6H6gMTsXgYlKT0D00k1awbn34NODOjgdLk2qXaX2RuZ8x3TR-D_Zr86n5qQ-KZGNFPoixOEWvM",
-  capabilities: "https://lh3.googleusercontent.com/aida-public/AB6AXuA9FmV37gubxXesQVSSDRj4dspNtgn4CVXFrjj2HGhfJKHNVVn10qwGF2zUL1j9Lpk_8E-nhi8wdfU-UcebEuXDtgzVfIV2sE3diLXeSdBDSRh93M5TyhYSTCDYlnRbV28DLDD1qwBCi46DQaZboYv9cEartWFLU3ttDU7GG7R3ogGVtloGgKV0pvZXYkBT96ca4vP3v0F9WmzV5QBVCAItWI4uEJd6vFozx5YgJ3Y",
-  access: "https://lh3.googleusercontent.com/aida-public/AB6AXuAFoTWg4n84OjVGs1ooL3_2GhegJ92wH8B1pE0kM8Y_XX03iwiJuuFqTSQZfLwcA2bOKw89iRuotybfHdj-zeHayq_czcnVft7o_whGbw7INmv4Y-HeHiyuddTFEnYIQg8B0aj3T8vNZrw98HPvtxQijsZfQYkyO10V3fz6YnryWB-LYLphy4RYku7pzUqLyQrv7_w-aomEOUn9z8edW6lNH4Tm_JBY6ZVg63qHqXU",
+  analytics: "https://www.kearneyco.com/wp-content/uploads/2023/11/AUDIT-DATA-ANALYTICS.png",
+  capabilities: "https://dam.nttdata.com/api/public/content/2551x1800_AdobeStock_2156890196_edit_04d85b?v=35972f6c",
+  access: "https://www.sunzinet.com/hs-fs/hubfs/00.%20SUNZINET%20Website%20Assets/BLOG/Embedded%20Commerce/Customer%20Portal_EN.png",
 };
 
 const services: Service[] = [
