@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
-import { sql } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    const result = await sql`SELECT NOW() as current_time, version() as pg_version;`;
+    const [dbInfo, userCount] = await Promise.all([
+      prisma.$queryRaw<Array<{ current_time: Date; pg_version: string }>>`
+        SELECT NOW() as current_time, version() as pg_version;
+      `,
+      prisma.user.count(),
+    ]);
+
     return NextResponse.json({
       status: "connected",
-      message: "Successfully connected to Neon PostgreSQL!",
-      timestamp: result[0]?.current_time,
-      version: result[0]?.pg_version,
+      message: "Successfully connected to Neon PostgreSQL via Prisma!",
+      timestamp: dbInfo[0]?.current_time,
+      version: dbInfo[0]?.pg_version,
+      stats: {
+        users: userCount,
+      },
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
