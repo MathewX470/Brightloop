@@ -179,7 +179,7 @@ export default function SubscriptionsPage() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#1d3c34] hover:bg-[#142d26] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Create Subscription</span>
@@ -194,7 +194,7 @@ export default function SubscriptionsPage() {
               onClick={() => setActiveTab(tab)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 activeTab === tab
-                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold"
+                  ? "bg-[#eaf3ef] text-[#1d3c34] border border-[#cce5d9] font-semibold"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               }`}
             >
@@ -236,7 +236,7 @@ export default function SubscriptionsPage() {
                     return (
                       <tr key={sub.id} className="hover:bg-slate-50/80 transition-colors">
                         <td className="px-6 py-4 font-mono font-bold text-slate-900 flex items-center gap-2">
-                          <SubscriptionsIcon className="w-4 h-4 text-indigo-600" />
+                          <SubscriptionsIcon className="w-4 h-4 text-[#1d3c34]" />
                           <span>{sub.subscriptionNumber}</span>
                         </td>
                         <td className="px-6 py-4 font-medium text-slate-900">
@@ -279,7 +279,7 @@ export default function SubscriptionsPage() {
                             {sub.status === "QUOTATION" && (
                               <button
                                 onClick={() => handleStatusChange(sub.id, "CONFIRMED")}
-                                className="px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 font-medium"
+                                className="px-2.5 py-1 rounded-md bg-[#eaf3ef] text-[#1d3c34] border border-[#cce5d9] hover:bg-indigo-100 font-medium"
                               >
                                 Confirm
                               </button>
@@ -448,7 +448,7 @@ export default function SubscriptionsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                  className="bg-[#1d3c34] hover:bg-[#142d26] text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {submitting ? "Creating..." : "Create Subscription"}
                 </button>
