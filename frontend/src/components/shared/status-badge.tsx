@@ -1,6 +1,9 @@
-import React from "react";
+import * as React from "react";
+import { Badge, type BadgeVariant } from "../ui/badge";
 
-type BadgeStatus =
+export type StatusTone = "success" | "warning" | "danger" | "info" | "neutral" | "primary";
+
+export type BadgeStatus =
   | "DRAFT"
   | "QUOTATION"
   | "CONFIRMED"
@@ -19,42 +22,89 @@ type BadgeStatus =
   | "CUSTOMER"
   | string;
 
-const statusColors: Record<string, string> = {
-  // Active / Paid / Success
-  ACTIVE: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  PAID: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  SUCCESS: "bg-emerald-50 text-emerald-700 border-emerald-200",
+const defaultStatusMap: Record<string, StatusTone> = {
+  // Database / Admin uppercase enums
+  ACTIVE: "success",
+  PAID: "success",
+  SUCCESS: "success",
+  CONFIRMED: "primary",
+  QUOTATION: "info",
+  PARTIALLY_PAID: "warning",
+  PENDING: "warning",
+  PAUSED: "warning",
+  DRAFT: "neutral",
+  CLOSED: "danger",
+  CANCELLED: "danger",
+  FAILED: "danger",
+  REFUNDED: "primary",
+  ADMIN: "primary",
+  STAFF: "info",
+  CUSTOMER: "success",
 
-  // In-progress / Quotation / Confirmed
-  QUOTATION: "bg-sky-50 text-sky-700 border-sky-200",
-  CONFIRMED: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  PARTIALLY_PAID: "bg-amber-50 text-amber-700 border-amber-200",
-  PENDING: "bg-amber-50 text-amber-700 border-amber-200",
-  PAUSED: "bg-amber-50 text-amber-700 border-amber-200",
-
-  // Draft / Inactive
-  DRAFT: "bg-slate-100 text-slate-700 border-slate-200",
-
-  // Terminated / Closed / Cancelled
-  CLOSED: "bg-rose-50 text-rose-700 border-rose-200",
-  CANCELLED: "bg-rose-50 text-rose-700 border-rose-200",
-  FAILED: "bg-rose-50 text-rose-700 border-rose-200",
-  REFUNDED: "bg-purple-50 text-purple-700 border-purple-200",
-
-  // Roles
-  ADMIN: "bg-purple-50 text-purple-700 border-purple-200",
-  STAFF: "bg-blue-50 text-blue-700 border-blue-200",
-  CUSTOMER: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  // Lowercase & normalized variants
+  active: "success",
+  paid: "success",
+  completed: "success",
+  approved: "success",
+  successful: "success",
+  pending: "warning",
+  awaiting: "warning",
+  draft: "neutral",
+  inactive: "neutral",
+  expired: "neutral",
+  cancelled: "danger",
+  canceled: "danger",
+  overdue: "danger",
+  failed: "danger",
+  rejected: "danger",
+  unpaid: "warning",
+  processing: "info",
+  in_progress: "info",
+  "in progress": "info",
+  suspended: "danger",
+  trial: "primary",
 };
 
-export function StatusBadge({ status }: { status: BadgeStatus }) {
-  const colorClass = statusColors[status] || "bg-slate-100 text-slate-700 border-slate-200";
+const toneVariants: Record<StatusTone, BadgeVariant> = {
+  success: "success",
+  warning: "warning",
+  danger: "danger",
+  info: "info",
+  neutral: "neutral",
+  primary: "primary",
+};
+
+export interface StatusBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  status: BadgeStatus;
+  tone?: StatusTone;
+  showDot?: boolean;
+  label?: string;
+  size?: "sm" | "md" | "lg";
+}
+
+export function StatusBadge({
+  status,
+  tone,
+  showDot = false,
+  label,
+  size = "md",
+  className = "",
+  ...props
+}: StatusBadgeProps) {
+  const trimmed = status ? String(status).trim() : "";
+  const normalized = trimmed.toLowerCase();
+  const resolvedTone = tone ?? defaultStatusMap[trimmed] ?? defaultStatusMap[normalized] ?? "neutral";
+  const display = label ?? trimmed.replace(/[_-]+/g, " ");
 
   return (
-    <span
-      className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold border font-mono tracking-wide ${colorClass}`}
+    <Badge
+      variant={toneVariants[resolvedTone]}
+      size={size}
+      dot={showDot}
+      className={className}
+      {...props}
     >
-      {status}
-    </span>
+      {display}
+    </Badge>
   );
 }
