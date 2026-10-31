@@ -49,7 +49,7 @@ const navigation = [
   {
     label: "MAIN",
     items: [
-      { label: "Dashboard", href: "/dashboardd", icon: "grid" as const, exact: true },
+      { label: "Dashboard", href: "/client/dashboard", icon: "grid" as const, exact: true },
       { label: "Quotations", href: "/my-quotations", icon: "file-text" as const },
       { label: "Subscriptions", href: "/my-subscriptions", icon: "layers" as const },
     ],
@@ -102,7 +102,7 @@ export function PortalSidebar({
       >
         {/* Brand header */}
         <div className="flex h-[76px] items-center justify-between border-b border-slate-100 px-6">
-          <Link href="/dashboardd" onClick={onMobileClose} className="group flex min-w-0 items-center gap-3">
+          <Link href="/client/dashboard" onClick={onMobileClose} className="group flex min-w-0 items-center gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-[13px] bg-slate-950 text-white shadow-sm shadow-slate-900/15">
               {brandMark ?? (
                 <svg viewBox="0 0 24 24" className="size-[21px]" fill="none" aria-hidden="true">

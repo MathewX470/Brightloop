@@ -1,6 +1,8 @@
+
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { PortalSidebar } from "./PortalSidebar";
 import { PortalTopbar } from "./PortalTopbar";
 
@@ -12,9 +14,7 @@ export interface PortalLayoutProps {
   customerEmail?: string;
   avatarUrl?: string;
   onSignOut?: () => void;
-  /** Optional content rendered above the page body, below the topbar. */
   announcement?: React.ReactNode;
-  /** Set false when embedding the portal shell inside another layout. */
   showSidebar?: boolean;
 }
 
@@ -30,6 +30,28 @@ export function PortalLayout({
   showSidebar = true,
 }: PortalLayoutProps) {
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      router.replace("/login");
+      router.refresh();
+    } catch (error) {
+      console.error("Logout error:", error);
+      window.alert("Unable to sign out. Please try again.");
+    }
+  };
+
+  const signOutHandler = onSignOut ?? handleSignOut;
 
   return (
     <div className="min-h-screen bg-[#f7f8fa] text-slate-900">
@@ -39,7 +61,7 @@ export function PortalLayout({
           onMobileClose={() => setMobileNavOpen(false)}
           brandName={brandName}
           brandMark={brandMark}
-          onLogout={onSignOut}
+          onLogout={signOutHandler}
         />
       )}
 
@@ -49,7 +71,7 @@ export function PortalLayout({
           customerName={customerName}
           customerEmail={customerEmail}
           avatarUrl={avatarUrl}
-          onSignOut={onSignOut}
+          onSignOut={signOutHandler}
         />
 
         {announcement && (
@@ -63,7 +85,9 @@ export function PortalLayout({
         </main>
 
         <footer className="mx-auto flex w-full max-w-[1600px] flex-col gap-1 border-t border-slate-200/70 px-4 py-5 text-[11px] text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-9">
-          <span>© {new Date().getFullYear()} {brandName}. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} {brandName}. All rights reserved.
+          </span>
           <span className="flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-emerald-500" />
             All systems operational

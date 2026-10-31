@@ -58,7 +58,10 @@ export function PortalTopbar({
 }: PortalTopbarProps) {
   const pathname = usePathname();
   const segment = pathname.split("/").filter(Boolean)[0] ?? "dashboard";
-  const currentLabel = routeLabels[segment] ?? "Customer portal";
+  const currentLabel =
+  pathname === "/client/dashboard"
+    ? "Dashboard"
+    : routeLabels[segment] ?? "Customer portal";
   const initials = customerName.split(" ").filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || "AM";
 
   return (
