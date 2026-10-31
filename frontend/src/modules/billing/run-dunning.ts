@@ -24,7 +24,10 @@ export interface DunningReport {
  * - Day 7-9 Overdue: 5% late fee surcharge applied + urgent reminder email
  * - Day 10+ Overdue: Subscription paused + suspension notification email
  */
-export async function runDunningEngine(targetDate: Date = new Date()): Promise<DunningReport> {
+export async function runDunningEngine(
+  targetDate: Date = new Date(),
+  forceDispatch: boolean = false
+): Promise<DunningReport> {
   const overdueInvoices = await prisma.invoice.findMany({
     where: {
       status: { in: ["CONFIRMED", "PARTIALLY_PAID"] },
@@ -50,22 +53,26 @@ export async function runDunningEngine(targetDate: Date = new Date()): Promise<D
     const currentTime = targetDate.getTime();
     const daysOverdue = Math.max(1, Math.floor((currentTime - dueTime) / (1000 * 60 * 60 * 24)));
 
-    // Prevent duplicate emails: Check if an email was ALREADY sent for this invoice today
+    // Prevent duplicate emails: Check if an email was ALREADY sent for this invoice today (unless forceDispatch is enabled for demo intervals)
     const dateKey = targetDate.toISOString().slice(0, 10);
-    const idempotencyKey = `DUNNING_${inv.id}_STAGE_${daysOverdue >= 10 ? 'SUSPEND' : daysOverdue >= 7 ? 'LATEFEE' : 'REMIND'}_${dateKey}`;
+    const idempotencyKey = forceDispatch
+      ? `DUNNING_${inv.id}_DEMO_${Date.now()}`
+      : `DUNNING_${inv.id}_STAGE_${daysOverdue >= 10 ? 'SUSPEND' : daysOverdue >= 7 ? 'LATEFEE' : 'REMIND'}_${dateKey}`;
 
-    const alreadySentToday = await prisma.billingEvent.findUnique({
-      where: { idempotencyKey },
-    });
-
-    if (alreadySentToday) {
-      details.push({
-        invoiceNumber: inv.invoiceNumber,
-        customerName: inv.customer.companyName,
-        daysOverdue,
-        actionTaken: "NO_ACTION",
+    if (!forceDispatch) {
+      const alreadySentToday = await prisma.billingEvent.findUnique({
+        where: { idempotencyKey },
       });
-      continue;
+
+      if (alreadySentToday) {
+        details.push({
+          invoiceNumber: inv.invoiceNumber,
+          customerName: inv.customer.companyName,
+          daysOverdue,
+          actionTaken: "NO_ACTION",
+        });
+        continue;
+      }
     }
 
     const remainingBalance = Number(inv.total) - Number(inv.paidAmount);

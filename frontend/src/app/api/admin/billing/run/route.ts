@@ -15,12 +15,13 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json().catch(() => ({}));
     const targetDate = body.targetDate ? new Date(body.targetDate) : new Date();
+    const forceDispatch = Boolean(body.forceDispatch);
 
     // 1. Run recurring billing batch (generate new invoices)
     const billingReport = await runBillingBatch({ targetDate });
 
     // 2. Run dunning chaser (reminders, late fees, pause delinquent subs)
-    const dunningReport = await runDunningEngine(targetDate);
+    const dunningReport = await runDunningEngine(targetDate, forceDispatch);
 
     // 3. Record batch execution audit in BillingEvent table
     try {
