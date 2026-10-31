@@ -1,13 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (searchParams.get("registered") === "true") {
+      setSuccessMessage("Account created successfully! Please sign in with your credentials.");
+    } else if (searchParams.get("reset") === "true") {
+      setSuccessMessage("Password reset successfully! You can now sign in with your new password.");
+    }
+  }, [searchParams]);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -73,8 +83,14 @@ export default function LoginPage() {
         return;
       }
 
-      // Successful login -> Navigate to respective dashboard/portal
-      router.push(data.redirectUrl || "/dashboard");
+      // Successful login -> Navigate to callbackUrl if present, otherwise role-based redirect
+      const callbackUrl = searchParams.get("callbackUrl");
+      if (callbackUrl && !callbackUrl.startsWith("//") && callbackUrl.startsWith("/")) {
+        router.push(callbackUrl);
+      } else {
+        router.push(data.redirectUrl || "/dashboard");
+      }
+      router.refresh();
     } catch (err: any) {
       setErrors({ general: "Unable to connect to the server. Please try again." });
       setIsLoading(false);
@@ -115,6 +131,25 @@ export default function LoginPage() {
               Access the management dashboard or customer portal
             </p>
           </div>
+
+          {successMessage && (
+            <div className="mb-5 rounded-lg bg-emerald-50 p-3.5 border border-emerald-200">
+              <div className="flex items-center">
+                <svg
+                  className="h-5 w-5 text-emerald-600 mr-2 flex-shrink-0"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM16.707 7.707a1 1 0 00-1.414-1.414L9 11.586 6.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-sm font-medium text-emerald-800">{successMessage}</span>
+              </div>
+            </div>
+          )}
 
           {errors.general && (
             <div className="mb-5 rounded-lg bg-red-50 p-3.5 border border-red-200">
