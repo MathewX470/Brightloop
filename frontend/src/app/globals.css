@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -22,6 +23,42 @@
   --color-brand-sage: var(--brand-sage);
   --color-surface: var(--surface);
   --color-border-light: var(--border-light);
+  --color-pickle-dark: #0A291E;
+  --color-pickle-card: #0e3b2b;
+  --color-pickle-lime: #c6ff00;
+}
+
+.bg-pickle-dark {
+  background-color: #0A291E;
+}
+
+.bg-pickle-card {
+  background-color: #0e3b2b;
+}
+
+.text-pickle-lime {
+  color: #c6ff00;
+}
+
+.border-pickle-card {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.font-brand-logo {
+  font-family: 'Fredoka', var(--font-plus-jakarta-sans), sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.curved-text-path {
+  fill: none;
+}
+
+.curved-text-content {
+  font-family: var(--font-plus-jakarta-sans), sans-serif;
+  font-weight: 800;
+  fill: #ffffff;
+  font-size: 26px;
+  letter-spacing: 0.04em;
 }
 
 body {
