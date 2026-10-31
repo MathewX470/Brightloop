@@ -251,7 +251,7 @@ export default async function DashboardPage() {
   const now = new Date();
   const hours = now.getHours();
   const timeGreeting = hours < 12 ? "Good morning" : hours < 18 ? "Good afternoon" : "Good evening";
-  const userName = session?.name ? session.name.split(" ")[0] : "Rohan";
+  const userName = session?.name ? session.name.split(" ")[0] : "Admin";
 
   const formattedDate = now.toLocaleDateString("en-GB", {
     weekday: "long",
@@ -306,8 +306,8 @@ export default async function DashboardPage() {
         subtitle="Real-time subscriptions, revenue, and collection overview"
         actionHref="/subscriptions"
         actionLabel="Create New"
-        userName={session?.name || "Rohan John"}
-        userRole={session?.role || "Admin"}
+        userName={session?.name || "Brightloop Admin"}
+        userRole={session?.role ? (session.role.charAt(0) + session.role.slice(1).toLowerCase()) : "Admin"}
       />
 
       <div className="p-8 space-y-7 max-w-[1400px] w-full mx-auto">
