@@ -1,12 +1,17 @@
 import React from "react";
 import { Sidebar } from "@/components/layout/sidebar";
+import { getSession } from "@/modules/auth/session";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export const dynamic = "force-dynamic";
+
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await getSession();
+
   return (
-    <div className="flex min-h-screen bg-slate-50 text-slate-900 font-sans">
-      <Sidebar />
+    <div className="flex min-h-screen bg-[#f8faf9] text-gray-800 font-sans selection:bg-[#eaf3ef] selection:text-[#1d3c34]">
+      <Sidebar currentRole={session?.role ?? "ADMIN"} />
       <div className="flex-1 flex flex-col min-w-0">
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );

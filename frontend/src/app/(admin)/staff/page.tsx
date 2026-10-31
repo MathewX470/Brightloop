@@ -100,7 +100,7 @@ export default function StaffPage() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors shadow-xs"
+            className="flex items-center gap-2 bg-[#1d3c34] hover:bg-[#142d26] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors shadow-xs"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Add Member of Staff</span>
@@ -175,7 +175,7 @@ export default function StaffPage() {
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-6 shadow-xl">
             <div className="flex items-center gap-2 mb-1">
-              <StaffIcon className="w-5 h-5 text-indigo-600" />
+              <StaffIcon className="w-5 h-5 text-[#1d3c34]" />
               <h3 className="text-base font-bold text-slate-900">Add New Member of Staff</h3>
             </div>
             <p className="text-xs text-slate-500 mb-6">
@@ -249,7 +249,7 @@ export default function StaffPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-xs"
+                  className="bg-[#1d3c34] hover:bg-[#142d26] text-white font-semibold px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-xs"
                 >
                   {submitting ? "Adding Member..." : "Save Member"}
                 </button>
