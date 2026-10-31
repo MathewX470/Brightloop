@@ -10,10 +10,10 @@ export const dynamic = "force-dynamic";
 export default async function BillingEventsPage() {
   const session = await getSession();
 
-  // Fetch recent billing events from the database
+  // Fetch recent billing events from the database (up to 250 recent events)
   const events = await prisma.billingEvent.findMany({
     orderBy: { createdAt: "desc" },
-    take: 100,
+    take: 250,
     include: {
       subscription: {
         include: { customer: true },
@@ -21,6 +21,8 @@ export default async function BillingEventsPage() {
       invoice: true,
     },
   });
+
+  const totalCount = await prisma.billingEvent.count();
 
   return (
     <div className="flex-1 flex flex-col min-w-0">
@@ -39,16 +41,16 @@ export default async function BillingEventsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-5">
           <div className="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-xs">
             <span className="text-xs text-gray-500 font-medium">Total Logged Executions</span>
-            <div className="text-2xl font-bold text-gray-900 mt-1">{events.length}</div>
+            <div className="text-2xl font-bold text-gray-900 mt-1">{totalCount}</div>
             <span className="text-[11px] text-gray-400 mt-1 block">Full execution history</span>
           </div>
 
           <div className="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-xs">
-            <span className="text-xs text-gray-500 font-medium">🧾 Invoices Generated</span>
+            <span className="text-xs text-gray-500 font-medium">🧾 Billing Batch Cycles</span>
             <div className="text-2xl font-bold text-emerald-600 mt-1">
-              {events.filter((e) => e.eventType.includes("BATCH") || e.eventType.includes("INVOICE")).length}
+              {events.filter((e) => e.eventType === "BATCH_BILLING_CYCLE").length}
             </div>
-            <span className="text-[11px] text-emerald-600 font-medium mt-1 block">Billing batch jobs</span>
+            <span className="text-[11px] text-emerald-600 font-medium mt-1 block">Evaluated renewals</span>
           </div>
 
           <div className="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-xs">
