@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
     // Determine redirect destination according to RBAC
     let redirectUrl = "/dashboard";
     if (user.role === "CUSTOMER") {
-      redirectUrl = "/my-subscriptions";
+      redirectUrl = "/client/dashboard";
     }
 
     return NextResponse.json({

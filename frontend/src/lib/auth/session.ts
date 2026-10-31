@@ -10,6 +10,7 @@ export interface SessionUser {
   email: string;
   name: string;
   role: UserRole;
+  customerId?: string | null;
 }
 
 interface SessionPayload extends SessionUser {
@@ -74,6 +75,7 @@ export async function getSession(): Promise<SessionUser | null> {
       email: payload.email,
       name: payload.name,
       role: payload.role,
+      customerId: payload.customerId ?? null,
     };
   } catch {
     return null;
