@@ -84,7 +84,7 @@ export default function SubscriptionsPage() {
           setFormData((prev) => ({ ...prev, customerId: custJson.customers[0].id }));
         }
       }
-      if (plansJson.ok) {
+      if (plansRes.ok) {
         setPlans(plansJson.plans || []);
         if (plansJson.plans?.length > 0 && !formData.planId) {
           setFormData((prev) => ({
@@ -130,16 +130,11 @@ export default function SubscriptionsPage() {
       const selectedPlan = plans.find((p) => p.id === formData.planId);
       const payload = {
         customerId: formData.customerId,
+        planId: formData.planId,
+        quantity: Number(formData.quantity) || 1,
+        unitPrice: parseFloat(formData.unitPrice) || Number(selectedPlan?.price || 0),
         billingCycle: formData.billingCycle,
         paymentTermsDays: Number(formData.paymentTermsDays) || 15,
-        lines: [
-          {
-            planId: formData.planId,
-            productId: selectedPlan?.product ? selectedPlan.product.id : undefined,
-            quantity: Number(formData.quantity) || 1,
-            unitPrice: parseFloat(formData.unitPrice) || Number(selectedPlan?.price || 0),
-          },
-        ],
       };
 
       const res = await fetch("/api/subscriptions", {
