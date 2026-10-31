@@ -64,3 +64,4 @@ export async function sendPasswordResetEmail({
 
   return transporter.sendMail(mailOptions);
 }
+
