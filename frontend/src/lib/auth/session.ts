@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { Role } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import crypto from "crypto";
 
 const SESSION_COOKIE_NAME = "brightloop_session";
@@ -9,7 +9,7 @@ export interface SessionUser {
   id: string;
   email: string;
   name: string;
-  role: Role;
+  role: UserRole;
 }
 
 interface SessionPayload extends SessionUser {
@@ -85,6 +85,7 @@ export async function destroySession() {
   cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
-export function isRoleAllowed(userRole: Role, allowedRoles: Role[]): boolean {
+export function isRoleAllowed(userRole: UserRole, allowedRoles: UserRole[]): boolean {
   return allowedRoles.includes(userRole);
 }
+
