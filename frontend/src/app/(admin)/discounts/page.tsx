@@ -143,7 +143,7 @@ export default function DiscountsPage() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#1d3c34] hover:bg-[#142d26] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Create Discount Rule</span>
@@ -179,7 +179,7 @@ export default function DiscountsPage() {
                 discounts.map((disc) => (
                   <tr key={disc.id} className="hover:bg-slate-50/80 transition-colors">
                     <td className="px-6 py-4 font-semibold text-slate-900 flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                      <div className="w-7 h-7 rounded-lg bg-[#eaf3ef] flex items-center justify-center text-[#1d3c34]">
                         <DiscountsIcon className="w-4 h-4" />
                       </div>
                       <span>{disc.name}</span>
@@ -204,7 +204,7 @@ export default function DiscountsPage() {
                           {disc.products[0].product.name}
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-mono font-medium">
+                        <span className="px-2 py-0.5 rounded-md bg-[#eaf3ef] text-[#1d3c34] border border-[#cce5d9] text-[10px] font-mono font-medium">
                           Whole Subscription
                         </span>
                       )}
@@ -352,7 +352,7 @@ export default function DiscountsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                  className="bg-[#1d3c34] hover:bg-[#142d26] text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {submitting ? "Saving..." : "Save Discount Rule"}
                 </button>
