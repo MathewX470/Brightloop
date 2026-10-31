@@ -1,6 +1,7 @@
 import React from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { getSession } from "@/modules/auth/session";
+import { AdminAssistantWidget } from "@/components/admin/AdminAssistantWidget";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="flex-1 flex flex-col min-w-0">
         <main className="flex-1">{children}</main>
       </div>
+      <AdminAssistantWidget />
     </div>
   );
 }
