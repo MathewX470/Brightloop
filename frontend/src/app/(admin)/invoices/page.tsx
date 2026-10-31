@@ -100,7 +100,7 @@ export default function InvoicesPage() {
               onClick={() => setActiveTab(tab)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 activeTab === tab
-                  ? "bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold"
+                  ? "bg-[#eaf3ef] text-[#1d3c34] border border-[#cce5d9] font-semibold"
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               }`}
             >
@@ -143,7 +143,7 @@ export default function InvoicesPage() {
                     return (
                       <tr key={inv.id} className="hover:bg-slate-50/80 transition-colors">
                         <td className="px-6 py-4 font-mono font-bold text-slate-900 flex items-center gap-2">
-                          <InvoicesIcon className="w-4 h-4 text-indigo-600" />
+                          <InvoicesIcon className="w-4 h-4 text-[#1d3c34]" />
                           <span>{inv.invoiceNumber}</span>
                         </td>
                         <td className="px-6 py-4">

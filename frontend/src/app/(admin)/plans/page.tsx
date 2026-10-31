@@ -142,7 +142,7 @@ export default function PlansPage() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#1d3c34] hover:bg-[#142d26] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Create New Plan</span>
@@ -180,7 +180,7 @@ export default function PlansPage() {
                   plans.map((plan) => (
                     <tr key={plan.id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="px-6 py-4 font-semibold text-slate-900 flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <div className="w-7 h-7 rounded-lg bg-[#eaf3ef] flex items-center justify-center text-[#1d3c34]">
                           <PlansIcon className="w-4 h-4" />
                         </div>
                         <span>{plan.name}</span>
@@ -214,7 +214,7 @@ export default function PlansPage() {
                             </span>
                           )}
                           {plan.allowRenewal && (
-                            <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 font-medium">
+                            <span className="px-1.5 py-0.5 rounded bg-[#eaf3ef] text-[#1d3c34] border border-[#cce5d9] font-medium">
                               Can Renew
                             </span>
                           )}
@@ -332,7 +332,7 @@ export default function PlansPage() {
                     type="checkbox"
                     checked={formData.autoClose}
                     onChange={(e) => setFormData({ ...formData, autoClose: e.target.checked })}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="rounded border-slate-300 text-[#1d3c34] focus:ring-indigo-500"
                   />
                   <span>Auto-close on expiration date</span>
                 </label>
@@ -341,7 +341,7 @@ export default function PlansPage() {
                     type="checkbox"
                     checked={formData.allowPause}
                     onChange={(e) => setFormData({ ...formData, allowPause: e.target.checked })}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="rounded border-slate-300 text-[#1d3c34] focus:ring-indigo-500"
                   />
                   <span>Allow subscription to be paused</span>
                 </label>
@@ -350,7 +350,7 @@ export default function PlansPage() {
                     type="checkbox"
                     checked={formData.allowRenewal}
                     onChange={(e) => setFormData({ ...formData, allowRenewal: e.target.checked })}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="rounded border-slate-300 text-[#1d3c34] focus:ring-indigo-500"
                   />
                   <span>Allow subscription to be renewed</span>
                 </label>
@@ -359,7 +359,7 @@ export default function PlansPage() {
                     type="checkbox"
                     checked={formData.allowEarlyClosure}
                     onChange={(e) => setFormData({ ...formData, allowEarlyClosure: e.target.checked })}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="rounded border-slate-300 text-[#1d3c34] focus:ring-indigo-500"
                   />
                   <span>Allow subscription to be closed early</span>
                 </label>
@@ -376,7 +376,7 @@ export default function PlansPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                  className="bg-[#1d3c34] hover:bg-[#142d26] text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {submitting ? "Saving..." : "Create Plan"}
                 </button>
