@@ -187,4 +187,3 @@ cd frontend
 npm run worker:billing -- --daemon --interval=60
 ```
 *(Monitors every 60 minutes, bills subscriptions the moment their billing date arrives, and surfaces overdue chasing alerts).*
-
