@@ -3,7 +3,45 @@ import { Badge, type BadgeVariant } from "../ui/badge";
 
 export type StatusTone = "success" | "warning" | "danger" | "info" | "neutral" | "primary";
 
+export type BadgeStatus =
+  | "DRAFT"
+  | "QUOTATION"
+  | "CONFIRMED"
+  | "ACTIVE"
+  | "PAUSED"
+  | "CLOSED"
+  | "PARTIALLY_PAID"
+  | "PAID"
+  | "CANCELLED"
+  | "PENDING"
+  | "SUCCESS"
+  | "FAILED"
+  | "REFUNDED"
+  | "ADMIN"
+  | "STAFF"
+  | "CUSTOMER"
+  | string;
+
 const defaultStatusMap: Record<string, StatusTone> = {
+  // Database / Admin uppercase enums
+  ACTIVE: "success",
+  PAID: "success",
+  SUCCESS: "success",
+  CONFIRMED: "primary",
+  QUOTATION: "info",
+  PARTIALLY_PAID: "warning",
+  PENDING: "warning",
+  PAUSED: "warning",
+  DRAFT: "neutral",
+  CLOSED: "danger",
+  CANCELLED: "danger",
+  FAILED: "danger",
+  REFUNDED: "primary",
+  ADMIN: "primary",
+  STAFF: "info",
+  CUSTOMER: "success",
+
+  // Lowercase & normalized variants
   active: "success",
   paid: "success",
   completed: "success",
@@ -37,16 +75,36 @@ const toneVariants: Record<StatusTone, BadgeVariant> = {
 };
 
 export interface StatusBadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
-  status: string;
+  status: BadgeStatus;
   tone?: StatusTone;
   showDot?: boolean;
   label?: string;
   size?: "sm" | "md" | "lg";
 }
 
-export function StatusBadge({ status, tone, showDot = true, label, size = "md", className = "", ...props }: StatusBadgeProps) {
-  const normalized = status.trim().toLowerCase();
-  const resolvedTone = tone ?? defaultStatusMap[normalized] ?? "neutral";
-  const display = label ?? status.replace(/[_-]+/g, " ").replace(/\b\w/g, char => char.toUpperCase());
-  return <Badge variant={toneVariants[resolvedTone]} size={size} dot={showDot} className={className} {...props}>{display}</Badge>;
+export function StatusBadge({
+  status,
+  tone,
+  showDot = false,
+  label,
+  size = "md",
+  className = "",
+  ...props
+}: StatusBadgeProps) {
+  const trimmed = status ? String(status).trim() : "";
+  const normalized = trimmed.toLowerCase();
+  const resolvedTone = tone ?? defaultStatusMap[trimmed] ?? defaultStatusMap[normalized] ?? "neutral";
+  const display = label ?? trimmed.replace(/[_-]+/g, " ");
+
+  return (
+    <Badge
+      variant={toneVariants[resolvedTone]}
+      size={size}
+      dot={showDot}
+      className={className}
+      {...props}
+    >
+      {display}
+    </Badge>
+  );
 }
