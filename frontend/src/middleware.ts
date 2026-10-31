@@ -86,7 +86,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Identify route categories
+  // 2. Public landing page at root path
+  if (pathname === "/") {
+    return NextResponse.next();
+  }
+
+  // 3. Identify route categories
   const isAuthRoute =
     pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
@@ -116,18 +121,18 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/templates") ||
     isAdminOnlyRoute;
 
-  // 3. Extract and verify session
+  // 4. Extract and verify session
   const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const user = sessionCookie ? await verifySessionToken(sessionCookie) : null;
 
-  // 4. Redirect logged-in users away from auth pages
+  // 5. Redirect logged-in users away from auth pages
   if (user && isAuthRoute) {
     const destination =
       user.role === "CUSTOMER" ? "/client/dashboard" : "/dashboard";
     return NextResponse.redirect(new URL(destination, request.url));
   }
 
-  // 5. Protect management routes (Admin/Staff only)
+  // 6. Protect management routes (Admin/Staff only)
   if (isManagementRoute) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
@@ -146,7 +151,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 6. Protect customer portal routes (CUSTOMER ONLY - Admin & Staff Forbidden)
+  // 7. Protect customer portal routes (CUSTOMER ONLY - Admin & Staff Forbidden)
   if (isCustomerPortalRoute) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
@@ -158,16 +163,6 @@ export async function middleware(request: NextRequest) {
     if (user.role !== "CUSTOMER") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-  }
-
-  // 7. Root path redirect
-  if (pathname === "/") {
-    if (!user) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-    const destination =
-      user.role === "CUSTOMER" ? "/client/dashboard" : "/dashboard";
-    return NextResponse.redirect(new URL(destination, request.url));
   }
 
   return NextResponse.next();
