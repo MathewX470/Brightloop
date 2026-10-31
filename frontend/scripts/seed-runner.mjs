@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Seeding database via Neon PostgreSQL...");
+  console.log("Seeding database via PostgreSQL...");
 
   // 1. Users / Staff
   const adminUser = await prisma.user.upsert({

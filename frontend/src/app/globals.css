@@ -1,20 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f8faf9;
+  --foreground: #1f2937;
+  --brand-forest: #1d3c34;
+  --brand-forest-dark: #142c26;
+  --brand-mint: #e6f3ee;
+  --brand-mint-light: #f0f7f4;
+  --brand-sage: #2f695a;
+  --surface: #f9faf9;
+  --border-light: #eaefec;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-forest: var(--brand-forest);
+  --color-brand-forest-dark: var(--brand-forest-dark);
+  --color-brand-mint: var(--brand-mint);
+  --color-brand-mint-light: var(--brand-mint-light);
+  --color-brand-sage: var(--brand-sage);
+  --color-surface: var(--surface);
+  --color-border-light: var(--border-light);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-plus-jakarta-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+.chart-grid-line {
+  stroke: #edf1f0;
+  stroke-dasharray: 4 4;
+}
+
+/* Subtle custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 9999px;
 }
 
 @keyframes rise-in {

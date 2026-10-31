@@ -134,7 +134,7 @@ export default function TemplatesPage() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#1d3c34] hover:bg-[#142d26] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Create Template</span>
@@ -158,7 +158,7 @@ export default function TemplatesPage() {
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                      <div className="w-8 h-8 rounded-lg bg-[#eaf3ef] flex items-center justify-center text-[#1d3c34]">
                         <TemplatesIcon className="w-4 h-4" />
                       </div>
                       <div>
@@ -318,7 +318,7 @@ export default function TemplatesPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                  className="bg-[#1d3c34] hover:bg-[#142d26] text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {submitting ? "Saving..." : "Save Template"}
                 </button>

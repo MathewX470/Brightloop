@@ -138,7 +138,7 @@ export default function PaymentsPage() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#1d3c34] hover:bg-[#142d26] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Record Payment</span>
@@ -177,7 +177,7 @@ export default function PaymentsPage() {
                   payments.map((p) => (
                     <tr key={p.id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="px-6 py-4 font-mono font-bold text-slate-900 flex items-center gap-2">
-                        <PaymentsIcon className="w-4 h-4 text-indigo-600" />
+                        <PaymentsIcon className="w-4 h-4 text-[#1d3c34]" />
                         <span>{p.paymentNumber}</span>
                       </td>
                       <td className="px-6 py-4 font-mono font-semibold text-slate-900">
@@ -322,7 +322,7 @@ export default function PaymentsPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                  className="bg-[#1d3c34] hover:bg-[#142d26] text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {submitting ? "Recording..." : "Record Payment"}
                 </button>
