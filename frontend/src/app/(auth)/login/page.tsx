@@ -183,7 +183,7 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 className="w-full py-2.5 text-base shadow-indigo-600/30"
-                isLoading={isLoading}
+                loading={isLoading}
               >
                 Sign In
               </Button>
