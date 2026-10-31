@@ -97,7 +97,7 @@ export default function CustomersPage() {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#1d3c34] hover:bg-[#142d26] text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors shadow-sm"
           >
             <PlusIcon className="w-4 h-4" />
             <span>Add Customer</span>
@@ -137,7 +137,7 @@ export default function CustomersPage() {
                     return (
                       <tr key={c.id} className="hover:bg-slate-50/80 transition-colors">
                         <td className="px-6 py-4 font-semibold text-slate-900 flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                          <div className="w-7 h-7 rounded-lg bg-[#eaf3ef] flex items-center justify-center text-[#1d3c34]">
                             <UsersIcon className="w-4 h-4" />
                           </div>
                           <span>{c.companyName}</span>
@@ -256,7 +256,7 @@ export default function CustomersPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
+                  className="bg-[#1d3c34] hover:bg-[#142d26] text-white font-medium px-4 py-2 rounded-lg transition-colors disabled:opacity-50 shadow-sm"
                 >
                   {submitting ? "Saving..." : "Add Customer"}
                 </button>
