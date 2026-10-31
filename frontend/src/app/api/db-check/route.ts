@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 
 export async function GET() {
   try {
@@ -12,7 +12,7 @@ export async function GET() {
 
     return NextResponse.json({
       status: "connected",
-      message: "Successfully connected to Neon PostgreSQL via Prisma!",
+      message: "Successfully connected to PostgreSQL via Prisma!",
       timestamp: dbInfo[0]?.current_time,
       version: dbInfo[0]?.pg_version,
       stats: {
