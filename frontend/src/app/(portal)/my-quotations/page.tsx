@@ -22,11 +22,27 @@ interface Quotation {
   lines: QuotationLine[];
 }
 
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (typeof window !== "undefined" && (window as unknown as { Razorpay?: unknown }).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
 export default function MyQuotationsPage() {
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
+  const [payingQuotationId, setPayingQuotationId] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   async function fetchQuotations() {
@@ -46,8 +62,10 @@ export default function MyQuotationsPage() {
 
   useEffect(() => {
     fetchQuotations();
+    loadRazorpayScript();
   }, []);
 
+  // 1. Standard Confirm or Decline without immediate payment
   async function handleQuotationAction(quotationId: string, action: "ACCEPT" | "DECLINE") {
     try {
       setActionLoading(true);
@@ -72,6 +90,114 @@ export default function MyQuotationsPage() {
     }
   }
 
+  // 2. Razorpay First-Time "Accept & Pay" Flow
+  async function handleAcceptAndPay(quotation: Quotation) {
+    try {
+      setPayingQuotationId(quotation.id);
+      setActionLoading(true);
+      setNotification(null);
+
+      // Ensure Razorpay SDK is loaded
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded) {
+        throw new Error("Unable to load Razorpay checkout script. Please check your internet connection.");
+      }
+
+      // Step A: Create Razorpay Order on server
+      const orderRes = await fetch("/api/portal/quotations/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quotationId: quotation.id }),
+      });
+
+      const orderData = await orderRes.json();
+      if (!orderRes.ok) {
+        throw new Error(orderData.error || "Failed to initialize Razorpay checkout order.");
+      }
+
+      // Step B: Launch official Razorpay Checkout Modal
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency || "INR",
+        name: "Brightloop Software",
+        description: `Subscription Activation (${quotation.subscriptionNumber})`,
+        order_id: orderData.orderId,
+        prefill: {
+          name: orderData.customer?.name || "",
+          email: orderData.customer?.email || "",
+          contact: orderData.customer?.phone || "",
+        },
+        theme: {
+          color: "#0f172a", // slate-900
+        },
+        handler: async function (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) {
+          try {
+            // Step C: Verify signature & activate subscription on server
+            const verifyRes = await fetch("/api/portal/quotations/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                quotationId: quotation.id,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+            if (!verifyRes.ok) {
+              throw new Error(verifyData.error || "Payment verification failed.");
+            }
+
+            setNotification({
+              type: "success",
+              message: verifyData.message || "Payment verified and subscription activated successfully!",
+            });
+
+            await fetchQuotations();
+          } catch (verifyErr) {
+            setNotification({
+              type: "error",
+              message: verifyErr instanceof Error ? verifyErr.message : "Error verifying payment signature.",
+            });
+          } finally {
+            setActionLoading(false);
+            setPayingQuotationId(null);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setActionLoading(false);
+            setPayingQuotationId(null);
+          },
+        },
+      };
+
+      // Open Razorpay Popup
+      interface RazorpayInstance {
+        open: () => void;
+      }
+      interface RazorpayConstructor {
+        new (options: unknown): RazorpayInstance;
+      }
+      const razorpayWindow = window as unknown as { Razorpay: RazorpayConstructor };
+      const rzpInstance = new razorpayWindow.Razorpay(options);
+      rzpInstance.open();
+    } catch (err) {
+      setNotification({
+        type: "error",
+        message: err instanceof Error ? err.message : "Failed to open Razorpay payment modal.",
+      });
+      setActionLoading(false);
+      setPayingQuotationId(null);
+    }
+  }
+
   return (
     <div className="space-y-7">
       {/* Header Banner */}
@@ -86,7 +212,7 @@ export default function MyQuotationsPage() {
               Quotations & Proposals
             </h1>
             <p className="mt-1.5 text-xs sm:text-sm text-slate-400">
-              Review and approve custom plan offers, seat additions, and contract proposals.
+              Review custom proposals and complete your first subscription payment via Razorpay.
             </p>
           </div>
           <Link
@@ -143,6 +269,7 @@ export default function MyQuotationsPage() {
         <div className="space-y-4">
           {quotations.map((quot) => {
             const total = quot.lines.reduce((acc, l) => acc + Number(l.unitPrice) * l.quantity, 0);
+            const isPayingThis = payingQuotationId === quot.id;
 
             return (
               <div
@@ -162,7 +289,7 @@ export default function MyQuotationsPage() {
 
                   <div className="flex items-center gap-3">
                     <StatusBadge status={quot.status} size="sm" />
-                    <span className="text-sm font-bold text-slate-900">{formatINR(total)}</span>
+                    <span className="text-base font-bold text-slate-900">{formatINR(total)}</span>
                   </div>
                 </div>
 
@@ -183,7 +310,7 @@ export default function MyQuotationsPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-end gap-3">
                   <button
                     onClick={() => {
                       if (confirm("Are you sure you want to decline this quote?")) {
@@ -199,9 +326,21 @@ export default function MyQuotationsPage() {
                   <button
                     onClick={() => handleQuotationAction(quot.id, "ACCEPT")}
                     disabled={actionLoading}
-                    className="px-5 py-2 rounded-xl bg-emerald-600 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors shadow-xs"
+                    className="px-4 py-2 rounded-xl border border-emerald-300 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors"
                   >
-                    Accept & Confirm Proposal
+                    Accept without Payment
+                  </button>
+
+                  {/* Primary Razorpay First Payment Button */}
+                  <button
+                    onClick={() => handleAcceptAndPay(quot)}
+                    disabled={actionLoading}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-bold text-white shadow-md hover:shadow-lg transition-all"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+                    <span>
+                      {isPayingThis ? "Opening Razorpay..." : `Accept & Pay ${formatINR(total)} (Razorpay)`}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -212,4 +351,3 @@ export default function MyQuotationsPage() {
     </div>
   );
 }
-
