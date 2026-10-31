@@ -1,68 +1,74 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const SESSION_COOKIE_NAME = "brightloop_session";
 const SESSION_SECRET =
   process.env.SESSION_SECRET ||
   "brightloop-default-hackathon-secret-key-change-in-production";
 
-interface SessionUser {
+type UserRole = "ADMIN" | "STAFF" | "CUSTOMER";
+
+interface SessionPayload {
   id: string;
   email: string;
   name: string;
-  role: "ADMIN" | "STAFF" | "CUSTOMER";
+  role: UserRole;
+  customerId?: string | null;
   exp: number;
 }
 
-// Edge-compatible HMAC-SHA256 signature verification using Web Crypto API
-async function verifySessionToken(token: string): Promise<SessionUser | null> {
+/**
+ * Edge-compatible Web Crypto HMAC-SHA256 verification.
+ * Runs natively in Next.js Edge Runtime without Node.js 'crypto' module.
+ */
+async function verifyHmac(payload: string, signature: string, secret: string): Promise<boolean> {
   try {
-    const parts = token.split(".");
-    if (parts.length !== 2) return null;
-
-    const [payloadBase64, signatureBase64] = parts;
-
-    // Convert secret to crypto key
     const encoder = new TextEncoder();
-    const keyData = encoder.encode(SESSION_SECRET);
     const key = await crypto.subtle.importKey(
       "raw",
-      keyData,
+      encoder.encode(secret),
       { name: "HMAC", hash: "SHA-256" },
       false,
-      ["sign"]
+      ["verify"]
     );
 
-    // Compute signature for incoming payload
-    const signatureBuffer = await crypto.subtle.sign(
+    const base64 = signature.replace(/-/g, "+").replace(/_/g, "/");
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+
+    return await crypto.subtle.verify(
       "HMAC",
       key,
-      encoder.encode(payloadBase64)
+      bytes,
+      encoder.encode(payload)
     );
+  } catch {
+    return false;
+  }
+}
 
-    // Convert computed buffer to base64url
-    const computedSignature = btoa(
-      String.fromCharCode(...new Uint8Array(signatureBuffer))
-    )
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
+async function verifySessionToken(token: string): Promise<SessionPayload | null> {
+  const parts = token.split(".");
+  if (parts.length !== 2) return null;
+  const [payload, signature] = parts;
 
-    if (computedSignature !== signatureBase64) {
+  const isValid = await verifyHmac(payload, signature, SESSION_SECRET);
+  if (!isValid) return null;
+
+  try {
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonStr = new TextDecoder().decode(
+      Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
+    );
+    const data: SessionPayload = JSON.parse(jsonStr);
+
+    if (Date.now() > data.exp) {
       return null;
     }
 
-    // Decode payload
-    const jsonStr = atob(
-      payloadBase64.replace(/-/g, "+").replace(/_/g, "/")
-    );
-    const user: SessionUser = JSON.parse(jsonStr);
-
-    if (Date.now() > user.exp) {
-      return null;
-    }
-
-    return user;
+    return data;
   } catch {
     return null;
   }
@@ -80,7 +86,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Identify route categories
+  // 2. Public landing page at root path
+  if (pathname === "/") {
+    return NextResponse.next();
+  }
+
+  // 3. Identify route categories
   const isAuthRoute =
     pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
@@ -88,8 +99,12 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/reset-password");
 
   const isCustomerPortalRoute =
+    pathname.startsWith("/client") ||
     pathname.startsWith("/my-subscriptions") ||
-    pathname.startsWith("/my-invoices");
+    pathname.startsWith("/my-invoices") ||
+    pathname.startsWith("/my-quotations") ||
+    pathname.startsWith("/my-payments") ||
+    pathname.startsWith("/profile");
 
   const isAdminOnlyRoute = pathname.startsWith("/staff");
 
@@ -106,18 +121,18 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/templates") ||
     isAdminOnlyRoute;
 
-  // 3. Extract and verify session
+  // 4. Extract and verify session
   const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const user = sessionCookie ? await verifySessionToken(sessionCookie) : null;
 
-  // 4. Redirect logged-in users away from auth pages
+  // 5. Redirect logged-in users away from auth pages
   if (user && isAuthRoute) {
     const destination =
-      user.role === "CUSTOMER" ? "/my-subscriptions" : "/dashboard";
+      user.role === "CUSTOMER" ? "/client/dashboard" : "/dashboard";
     return NextResponse.redirect(new URL(destination, request.url));
   }
 
-  // 5. Protect management routes (Admin/Staff only)
+  // 6. Protect management routes (Admin/Staff only)
   if (isManagementRoute) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
@@ -127,7 +142,7 @@ export async function middleware(request: NextRequest) {
 
     // Block CUSTOMER from accessing management / admin screens
     if (user.role === "CUSTOMER") {
-      return NextResponse.redirect(new URL("/my-subscriptions", request.url));
+      return NextResponse.redirect(new URL("/client/dashboard", request.url));
     }
 
     // Only ADMIN can access /staff management
@@ -136,23 +151,18 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 6. Protect customer portal routes
+  // 7. Protect customer portal routes (CUSTOMER ONLY - Admin & Staff Forbidden)
   if (isCustomerPortalRoute) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
     }
-  }
 
-  // 7. Root path redirect
-  if (pathname === "/") {
-    if (!user) {
-      return NextResponse.redirect(new URL("/login", request.url));
+    // Admin and Staff have NO access to customer portal pages
+    if (user.role !== "CUSTOMER") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    const destination =
-      user.role === "CUSTOMER" ? "/my-subscriptions" : "/dashboard";
-    return NextResponse.redirect(new URL(destination, request.url));
   }
 
   return NextResponse.next();
