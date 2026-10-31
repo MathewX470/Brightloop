@@ -39,6 +39,21 @@ interface InvoiceStats {
   invoiceCount: number;
 }
 
+function loadRazorpayScript(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (typeof window !== "undefined" && (window as unknown as { Razorpay?: unknown }).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
 export default function MyInvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [stats, setStats] = useState<InvoiceStats | null>(null);
@@ -51,6 +66,7 @@ export default function MyInvoicesPage() {
   const [payingInvoice, setPayingInvoice] = useState<Invoice | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("CREDIT_CARD");
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isOpeningRazorpay, setIsOpeningRazorpay] = useState(false);
 
   // Print/View Modal state
   const [viewingInvoice, setViewingInvoice] = useState<Invoice | null>(null);
@@ -75,9 +91,115 @@ export default function MyInvoicesPage() {
 
   useEffect(() => {
     fetchInvoices();
+    loadRazorpayScript();
   }, []);
 
-  async function handlePaymentSubmit(e: React.FormEvent) {
+  // 1. Razorpay Real Payment Gateway Checkout
+  async function handleRazorpayPayment() {
+    if (!payingInvoice) return;
+
+    try {
+      setIsOpeningRazorpay(true);
+      setNotification(null);
+
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded) {
+        throw new Error("Unable to load Razorpay checkout script. Please check your network connection.");
+      }
+
+      // Step A: Create Order on server
+      const res = await fetch("/api/portal/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoiceId: payingInvoice.id }),
+      });
+
+      const orderData = await res.json();
+      if (!res.ok) {
+        throw new Error(orderData.error || "Failed to create Razorpay checkout order.");
+      }
+
+      // Step B: Open Razorpay Modal
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount,
+        currency: orderData.currency || "INR",
+        name: "Brightloop Software",
+        description: `Settlement for Invoice ${orderData.invoiceNumber}`,
+        order_id: orderData.orderId,
+        prefill: {
+          name: orderData.customer?.name || "",
+          email: orderData.customer?.email || "",
+          contact: orderData.customer?.phone || "",
+        },
+        theme: {
+          color: "#0f172a", // slate-900
+        },
+        handler: async function (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) {
+          try {
+            // Step C: Verify payment signature on server
+            const verifyRes = await fetch("/api/portal/payments/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                invoiceId: payingInvoice.id,
+                razorpayOrderId: response.razorpay_order_id,
+                razorpayPaymentId: response.razorpay_payment_id,
+                razorpaySignature: response.razorpay_signature,
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+            if (!verifyRes.ok) {
+              throw new Error(verifyData.error || "Payment verification failed.");
+            }
+
+            setNotification({
+              type: "success",
+              message: verifyData.message || "Invoice settled successfully via Razorpay!",
+            });
+            setPayingInvoice(null);
+            await fetchInvoices();
+          } catch (verifyErr) {
+            setNotification({
+              type: "error",
+              message: verifyErr instanceof Error ? verifyErr.message : "Error verifying payment signature.",
+            });
+          } finally {
+            setIsOpeningRazorpay(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsOpeningRazorpay(false);
+          },
+        },
+      };
+
+      interface RazorpayInstance {
+        open: () => void;
+      }
+      interface RazorpayConstructor {
+        new (options: unknown): RazorpayInstance;
+      }
+      const razorpayWindow = window as unknown as { Razorpay: RazorpayConstructor };
+      const rzpInstance = new razorpayWindow.Razorpay(options);
+      rzpInstance.open();
+    } catch (err) {
+      setNotification({
+        type: "error",
+        message: err instanceof Error ? err.message : "Failed to open Razorpay payment gateway.",
+      });
+      setIsOpeningRazorpay(false);
+    }
+  }
+
+  // 2. Simulated Direct Payment Handler (Offline fallback)
+  async function handleSimulatedPayment(e: React.FormEvent) {
     e.preventDefault();
     if (!payingInvoice) return;
 
@@ -99,7 +221,7 @@ export default function MyInvoicesPage() {
 
       setNotification({
         type: "success",
-        message: data.message || "Payment processed successfully!",
+        message: data.message || "Simulated payment processed successfully!",
       });
       setPayingInvoice(null);
       await fetchInvoices();
@@ -147,48 +269,13 @@ export default function MyInvoicesPage() {
               Invoices & Statements
             </h1>
             <p className="mt-1.5 text-xs sm:text-sm text-slate-400">
-              Download tax invoices, review payments, and settle outstanding balances securely online.
+              View your billing statements, download GST tax invoices, and settle balances online via Razorpay.
             </p>
           </div>
         </div>
       </div>
 
-      {/* Metric Cards */}
-      {stats && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-            <p className="text-xs font-medium text-slate-500">Total Invoiced</p>
-            <p className="mt-2 text-2xl font-bold tracking-tight text-slate-950">{formatINR(stats.totalInvoiced)}</p>
-            <p className="mt-1 text-[11px] text-slate-400">{stats.invoiceCount} invoices generated</p>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-            <p className="text-xs font-medium text-slate-500">Total Settled</p>
-            <p className="mt-2 text-2xl font-bold tracking-tight text-emerald-600">{formatINR(stats.totalPaid)}</p>
-            <p className="mt-1 text-[11px] text-slate-400">Successfully reconciled</p>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-            <p className="text-xs font-medium text-slate-500">Outstanding Balance</p>
-            <p className={`mt-2 text-2xl font-bold tracking-tight ${stats.totalOutstanding > 0 ? "text-amber-600" : "text-slate-950"}`}>
-              {formatINR(stats.totalOutstanding)}
-            </p>
-            <p className="mt-1 text-[11px] text-slate-400">Awaiting clearance</p>
-          </div>
-
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
-            <p className="text-xs font-medium text-slate-500">Overdue Invoices</p>
-            <p className={`mt-2 text-2xl font-bold tracking-tight ${stats.overdueCount > 0 ? "text-rose-600" : "text-slate-950"}`}>
-              {stats.overdueCount}
-            </p>
-            <p className="mt-1 text-[11px] text-slate-400">
-              {stats.overdueCount > 0 ? "Immediate attention required" : "Zero overdue accounts"}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Notifications */}
+      {/* Notification Toast */}
       {notification && (
         <div
           className={`rounded-xl p-4 text-xs font-semibold flex items-center justify-between border ${
@@ -204,25 +291,52 @@ export default function MyInvoicesPage() {
         </div>
       )}
 
-      {/* Controls: Search & Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-xl w-fit">
-          {[
-            { id: "ALL", label: "All Invoices" },
-            { id: "UNPAID", label: "Unpaid & Due" },
-            { id: "PAID", label: "Paid" },
-            { id: "OVERDUE", label: "Overdue" },
-          ].map((tab) => (
+      {/* Metric Cards */}
+      {stats && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Invoiced</span>
+            <p className="mt-2 text-xl font-bold text-slate-900">{formatINR(stats.totalInvoiced)}</p>
+            <span className="text-[11px] text-slate-500 mt-0.5 block">{stats.invoiceCount} invoices issued</span>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Paid</span>
+            <p className="mt-2 text-xl font-bold text-emerald-600">{formatINR(stats.totalPaid)}</p>
+            <span className="text-[11px] text-slate-500 mt-0.5 block">Cleared payments</span>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Outstanding Balance</span>
+            <p className="mt-2 text-xl font-bold text-amber-600">{formatINR(stats.totalOutstanding)}</p>
+            <span className="text-[11px] text-slate-500 mt-0.5 block">Pending payment</span>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Overdue Invoices</span>
+            <p className="mt-2 text-xl font-bold text-rose-600">{stats.overdueCount}</p>
+            <span className="text-[11px] text-slate-500 mt-0.5 block">Requires attention</span>
+          </div>
+        </div>
+      )}
+
+      {/* Filter Tabs and Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+          {["ALL", "UNPAID", "PAID", "OVERDUE"].map((t) => (
             <button
-              key={tab.id}
-              onClick={() => setFilter(tab.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                filter === tab.id
-                  ? "bg-white text-slate-900 shadow-xs"
-                  : "text-slate-500 hover:text-slate-900"
+              key={t}
+              onClick={() => setFilter(t)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+                filter === t
+                  ? "bg-slate-900 text-white shadow-xs"
+                  : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50"
               }`}
             >
-              {tab.label}
+              {t === "ALL" && "All Invoices"}
+              {t === "UNPAID" && "Unpaid & Due"}
+              {t === "PAID" && "Fully Paid"}
+              {t === "OVERDUE" && "Overdue"}
             </button>
           ))}
         </div>
@@ -230,13 +344,13 @@ export default function MyInvoicesPage() {
         <div className="relative w-full sm:w-64">
           <input
             type="text"
-            placeholder="Search by invoice # or item..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            placeholder="Search invoice # or item..."
+            className="w-full rounded-xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400"
           />
           <svg
-            className="w-4 h-4 text-slate-400 absolute left-3 top-2.5"
+            className="pointer-events-none absolute right-3 top-2.5 h-3.5 w-3.5 text-slate-400"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -337,9 +451,10 @@ export default function MyInvoicesPage() {
                           {balance > 0 && inv.status !== "CANCELLED" && (
                             <button
                               onClick={() => setPayingInvoice(inv)}
-                              className="px-3 py-1.5 rounded-lg bg-indigo-600 text-[11px] font-semibold text-white hover:bg-indigo-700 transition-colors"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-[11px] font-bold text-white shadow-xs transition-colors"
                             >
-                              Pay Now
+                              <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                              <span>Pay Now</span>
                             </button>
                           )}
                         </div>
@@ -353,13 +468,13 @@ export default function MyInvoicesPage() {
         </div>
       )}
 
-      {/* Pay Now Modal */}
+      {/* Pay Invoice Dialog with Razorpay Integration */}
       {payingInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-xs p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-100 animate-in fade-in duration-150">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Online Invoice Settlement</h3>
+                <h3 className="text-base font-bold text-slate-900">Settle Invoice Online</h3>
                 <p className="text-xs text-slate-500">Invoice {payingInvoice.invoiceNumber}</p>
               </div>
               <button
@@ -370,7 +485,8 @@ export default function MyInvoicesPage() {
               </button>
             </div>
 
-            <form onSubmit={handlePaymentSubmit} className="mt-4 space-y-4">
+            <div className="mt-4 space-y-4">
+              {/* Invoice Breakdown */}
               <div className="rounded-xl bg-slate-50 p-4 border border-slate-100 text-xs space-y-1.5">
                 <div className="flex justify-between text-slate-600">
                   <span>Total Bill Amount:</span>
@@ -381,15 +497,44 @@ export default function MyInvoicesPage() {
                   <span className="text-emerald-600 font-semibold">{formatINR(payingInvoice.paidAmount)}</span>
                 </div>
                 <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-200 text-slate-900">
-                  <span>Amount to Settle:</span>
+                  <span>Outstanding Due:</span>
                   <span className="text-indigo-600">
                     {formatINR(Math.max(0, Number(payingInvoice.total) - Number(payingInvoice.paidAmount)))}
                   </span>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-2">Select Payment Method</label>
+              {/* Primary Action: Official Razorpay Payment Gateway */}
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={handleRazorpayPayment}
+                  disabled={isOpeningRazorpay}
+                  className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all disabled:opacity-50"
+                >
+                  <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+                  <span>
+                    {isOpeningRazorpay
+                      ? "Opening Razorpay..."
+                      : `Pay ${formatINR(Math.max(0, Number(payingInvoice.total) - Number(payingInvoice.paidAmount)))} via Razorpay`}
+                  </span>
+                </button>
+                <p className="text-center text-[10px] text-slate-400">
+                  Supports UPI, Google Pay, Test Cards (Debit/Credit) & NetBanking
+                </p>
+              </div>
+
+              {/* Divider for simulated offline fallback */}
+              <div className="relative flex py-2 items-center">
+                <div className="flex-grow border-t border-slate-200"></div>
+                <span className="flex-shrink mx-3 text-[10px] text-slate-400 uppercase font-semibold">
+                  Or test simulated payment
+                </span>
+                <div className="flex-grow border-t border-slate-200"></div>
+              </div>
+
+              {/* Secondary Option: Direct Simulation */}
+              <form onSubmit={handleSimulatedPayment} className="space-y-3">
                 <div className="grid grid-cols-3 gap-2">
                   {[
                     { id: "CREDIT_CARD", label: "Card", icon: "💳" },
@@ -400,36 +545,36 @@ export default function MyInvoicesPage() {
                       key={m.id}
                       type="button"
                       onClick={() => setPaymentMethod(m.id)}
-                      className={`p-3 rounded-xl border text-center transition-all ${
+                      className={`p-2.5 rounded-xl border text-center transition-all ${
                         paymentMethod === m.id
                           ? "border-indigo-600 bg-indigo-50/50 text-indigo-900 ring-2 ring-indigo-500/20"
                           : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                       }`}
                     >
-                      <span className="text-lg block mb-1">{m.icon}</span>
-                      <span className="text-[11px] font-semibold">{m.label}</span>
+                      <span className="text-sm block">{m.icon}</span>
+                      <span className="text-[10px] font-semibold">{m.label}</span>
                     </button>
                   ))}
                 </div>
-              </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setPayingInvoice(null)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isProcessingPayment}
-                  className="px-5 py-2 rounded-xl bg-indigo-600 text-xs font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 transition-colors"
-                >
-                  {isProcessingPayment ? "Processing..." : `Pay ${formatINR(Math.max(0, Number(payingInvoice.total) - Number(payingInvoice.paidAmount)))}`}
-                </button>
-              </div>
-            </form>
+                <div className="pt-2 flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPayingInvoice(null)}
+                    className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isProcessingPayment}
+                    className="px-4 py-1.5 rounded-xl bg-slate-100 border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-200 disabled:opacity-50 transition-colors"
+                  >
+                    {isProcessingPayment ? "Settling..." : "Instant Settle (Test)"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
@@ -479,53 +624,58 @@ export default function MyInvoicesPage() {
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 text-[11px] font-semibold text-slate-500 border-b border-slate-200">
                   <tr>
-                    <th className="p-3">Description</th>
-                    <th className="p-3 text-center">Qty</th>
-                    <th className="p-3 text-right">Unit Price</th>
-                    <th className="p-3 text-right">Total</th>
+                    <th className="px-4 py-2.5">Item Description</th>
+                    <th className="px-4 py-2.5 text-center">Qty</th>
+                    <th className="px-4 py-2.5 text-right">Unit Price</th>
+                    <th className="px-4 py-2.5 text-right">Total</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {viewingInvoice.lines.map((l) => (
                     <tr key={l.id}>
-                      <td className="p-3 font-semibold text-slate-800">{l.description}</td>
-                      <td className="p-3 text-center text-slate-600">{l.quantity}</td>
-                      <td className="p-3 text-right text-slate-600">{formatINR(l.unitPrice)}</td>
-                      <td className="p-3 text-right font-bold text-slate-900">{formatINR(l.total)}</td>
+                      <td className="px-4 py-3 font-medium text-slate-800">{l.description}</td>
+                      <td className="px-4 py-3 text-center text-slate-600">{l.quantity}</td>
+                      <td className="px-4 py-3 text-right text-slate-600">{formatINR(l.unitPrice)}</td>
+                      <td className="px-4 py-3 text-right font-semibold text-slate-900">{formatINR(l.total)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            {/* Invoice Totals */}
-            <div className="w-64 ml-auto text-xs space-y-1.5 pb-6 border-b border-slate-200">
-              <div className="flex justify-between text-slate-600">
-                <span>Subtotal:</span>
-                <span className="font-semibold text-slate-900">{formatINR(viewingInvoice.subtotal)}</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>GST Tax (18%):</span>
-                <span className="font-semibold text-slate-900">{formatINR(viewingInvoice.taxAmount)}</span>
-              </div>
-              <div className="flex justify-between text-sm font-bold pt-2 border-t border-slate-200 text-slate-900">
-                <span>Total Amount:</span>
-                <span className="text-indigo-600">{formatINR(viewingInvoice.total)}</span>
+            {/* Totals Summary */}
+            <div className="flex justify-end border-t border-slate-200 pt-4 text-xs">
+              <div className="w-64 space-y-1.5">
+                <div className="flex justify-between text-slate-600">
+                  <span>Subtotal:</span>
+                  <span>{formatINR(viewingInvoice.subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Taxes:</span>
+                  <span>{formatINR(viewingInvoice.taxAmount)}</span>
+                </div>
+                <div className="flex justify-between font-bold text-sm text-slate-900 border-t border-slate-200 pt-1.5">
+                  <span>Total Amount:</span>
+                  <span>{formatINR(viewingInvoice.total)}</span>
+                </div>
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between">
-              <span className="text-[11px] text-slate-400">Computer generated invoice. No signature required.</span>
+            {/* Footer Buttons */}
+            <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <p className="text-[10px] text-slate-400">
+                Generated automatically by Brightloop Billing Engine. Valid without physical signature.
+              </p>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => window.print()}
-                  className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800"
+                  className="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors"
                 >
-                  Print Invoice
+                  Print / Save PDF
                 </button>
                 <button
                   onClick={() => setViewingInvoice(null)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
                 >
                   Close
                 </button>
@@ -537,4 +687,3 @@ export default function MyInvoicesPage() {
     </div>
   );
 }
-
